@@ -2,12 +2,16 @@ import React from 'react';
 import './CourseCard.css';
 import PropTypes from 'prop-types';
 
-const CourseCard = ({ course, authors }) => {
+const CourseCard = ({ course, authors, onShowCourseInfo }) => {
   const getAuthorNames = (authorIds) => {
     return authorIds.map(id => {
       const author = authors.find(author => author.id === id);
       return author ? author.name : 'Unknown author';
     }).join(', ');
+  };
+
+  const handleShowCourseInfo = () => {
+    onShowCourseInfo(course);
   };
 
   return (
@@ -20,7 +24,7 @@ const CourseCard = ({ course, authors }) => {
         <p><strong>Created:</strong> {course.creationDate}</p>
       </div>
       <div className="course-card__button">
-        <button className="button">Show course</button>
+        <button className="button" onClick={handleShowCourseInfo}>Show course</button>
       </div>
     </div>
   );
@@ -38,7 +42,8 @@ CourseCard.propTypes = {
   authors: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
-  })).isRequired
+  })).isRequired,
+  onShowCourseInfo: PropTypes.func.isRequired
 };
 
 export default CourseCard;

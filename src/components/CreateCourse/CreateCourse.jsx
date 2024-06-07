@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import './CreateCourse.css';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import './CreateCourse.css';
 
 const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   const [title, setTitle] = useState('');
@@ -9,6 +10,8 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   const [creationDate, setCreationDate] = useState('');
   const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [newAuthorName, setNewAuthorName] = useState('');
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,6 +24,7 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
       authors: selectedAuthors,
     };
     onCreateCourse(newCourse);
+    navigate('/courses');
   };
 
   const handleAuthorChange = (e) => {
@@ -74,7 +78,10 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
         </div>
         <div className="create-course__buttons">
           <button className="button" type="submit">Create Course</button>
-          <button className="button button--secondary" type="button" onClick={onCancel}>Cancel</button>
+          <button className="button button--secondary" type="button" onClick={() => {
+            onCancel();
+            navigate('/courses');
+          }}>Cancel</button>
         </div>
       </form>
     </div>
