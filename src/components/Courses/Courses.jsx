@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
@@ -36,9 +36,11 @@ const Courses = ({ courses, authors, onAddCourseClick }) => {
     setSelectedCourse(null);
   };
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [courses, searchTerm]);
 
   return (
     <div className="courses">
