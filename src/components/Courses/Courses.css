@@ -1,0 +1,15 @@
+.courses {
+  margin-top: 20px;
+}
+
+.courses__search-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.courses__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
