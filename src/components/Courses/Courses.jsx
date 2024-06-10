@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './Courses.css';
 import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
@@ -12,9 +12,11 @@ const Courses = ({ courses, authors, onAddCourseClick }) => {
     setSearchTerm(term);
   };
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [courses, searchTerm]);
 
   return (
     <div className="courses">

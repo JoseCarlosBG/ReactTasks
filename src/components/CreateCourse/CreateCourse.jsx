@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import './CreateCourse.css';
 import PropTypes from 'prop-types';
 
 const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [duration, setDuration] = useState('');
-  const [creationDate, setCreationDate] = useState('');
-  const [selectedAuthors, setSelectedAuthors] = useState([]);
-  const [newAuthorName, setNewAuthorName] = useState('');
+  const titleRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const durationRef = useRef(null);
+  const creationDateRef = useRef(null);
+  const newAuthorNameRef = useRef(null);
+
+  const [selectedAuthors, setSelectedAuthors] = React.useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newCourse = {
       id: Date.now().toString(),
-      title,
-      description,
-      duration: parseInt(duration, 10),
-      creationDate,
+      title: titleRef.current.value,
+      description: descriptionRef.current.value,
+      duration: parseInt(durationRef.current.value, 10),
+      creationDate: creationDateRef.current.value,
       authors: selectedAuthors,
     };
     onCreateCourse(newCourse);
@@ -31,24 +32,25 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   };
 
   const handleAddAuthor = () => {
-    if (newAuthorName.trim()) {
+    const newAuthorName = newAuthorNameRef.current.value.trim();
+    if (newAuthorName) {
       const newAuthor = {
         id: Date.now().toString(),
         name: newAuthorName,
       };
       setAuthors(prevAuthors => [...prevAuthors, newAuthor]);
       setSelectedAuthors(prevSelectedAuthors => [...prevSelectedAuthors, newAuthor.id]);
-      setNewAuthorName('');
+      newAuthorNameRef.current.value = '';
     }
   };
 
   return (
     <div className="create-course">
       <form className="create-course__form" onSubmit={handleSubmit}>
-        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
-        <input type="number" placeholder="Duration (hours)" value={duration} onChange={(e) => setDuration(e.target.value)} required />
-        <input type="date" placeholder="Creation Date" value={creationDate} onChange={(e) => setCreationDate(e.target.value)} required />
+        <input type="text" placeholder="Title" ref={titleRef} required />
+        <textarea placeholder="Description" ref={descriptionRef} required></textarea>
+        <input type="number" placeholder="Duration (hours)" ref={durationRef} required />
+        <input type="date" placeholder="Creation Date" ref={creationDateRef} required />
         <div>
           <label>Authors:</label>
           {authors.map(author => (
@@ -66,8 +68,7 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
             <input
               type="text"
               placeholder="New Author Name"
-              value={newAuthorName}
-              onChange={(e) => setNewAuthorName(e.target.value)}
+              ref={newAuthorNameRef}
             />
             <button type="button" onClick={handleAddAuthor}>Add Author</button>
           </div>
