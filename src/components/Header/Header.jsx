@@ -22,8 +22,6 @@ const Header = ({ userName, onLogout }) => {
         <Logo />
       </div>
       <nav className="header-nav">
-        {userName && <Link to="/courses">Courses</Link>}
-        {userName && <Link to="/courses/add">Add New Course</Link>}
         {!userName && (
           <>
             <button onClick={handleRegistrationClick}>Register</button>
