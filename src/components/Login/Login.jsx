@@ -11,6 +11,7 @@ const Login = ({ setUserName }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const response = await fetch('http://localhost:4000/login', {
         method: 'POST',
@@ -20,29 +21,33 @@ const Login = ({ setUserName }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('API Response:', result);
-
-        // Check if the response was successful and contains a token
-        if (result.successful && result.result) {
-          // Extract token from the result
-          const token = result.result.replace('Bearer ', '');
-          // Set token in local storage
-          localStorage.setItem('userToken', token);
-          // Set user name if available
-          if (result.user && result.user.name) {
-            localStorage.setItem('userName', result.user.name);
-            setUserName(result.user.name);
-          }
-          // Navigate to the desired page
-          navigate('/courses');
-        } else {
-          console.error('Token or username is missing in the response');
-        }
-      } else {
+      // Check if the response is not OK
+      if (!response.ok) {
         console.error('Login failed with status:', response.status);
+        return;
       }
+
+      const result = await response.json();
+
+      // Check if the result is successful and contains a token
+      if (!result.successful || !result.result) {
+        console.error('Token or username is missing in the response');
+        return;
+      }
+
+      // Extract token from the result and set it in local storage
+      const token = result.result.replace('Bearer ', '');
+      localStorage.setItem('userToken', token);
+
+      // Set user name if available
+      if (result.user && result.user.name) {
+        localStorage.setItem('userName', result.user.name);
+        setUserName(result.user.name);
+      }
+
+      // Navigate to the courses page
+      navigate('/courses');
+      
     } catch (error) {
       console.error('Error:', error);
     }
@@ -57,7 +62,7 @@ const Login = ({ setUserName }) => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholderText="Enter email"
+          placeholder="Enter email"
           required
         />
         <Input
@@ -65,7 +70,7 @@ const Login = ({ setUserName }) => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholderText="Enter password"
+          placeholder="Enter password"
           required
         />
         <Button type="submit">Login</Button>

@@ -1,30 +1,73 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import CourseInfo from '../CourseInfo/CourseInfo';
+import { api_endpoints, storageKeys, paths } from '../../constants';
 import './Courses.css';
 
-const Courses = ({ courses, authors, onAddCourseClick }) => {
+const Courses = ({ onAddCourseClick }) => {
+  const [courses, setCourses] = useState([]);
+  const [authors, setAuthors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(storageKeys.userToken);
     if (token) {
-      navigate('/courses');
+      navigate(paths.courses);
     }
+    fetchCourses();
+    fetchAuthors();
   }, [navigate]);
 
-  const handleSearch = (term) => {
+  const fetchCourses = async (query = '', type = '') => {
+    try {
+      let response;
+      if (query!=='' && type!=='') {
+        response = await fetch(`${api_endpoints.filter}${type}=${query}`);
+      }
+      else{
+        response = await fetch(`${api_endpoints.courses}`);
+      }
+      
+      if (response.ok) {
+        const data = await response.json();
+        setCourses(data.result);
+      } else {
+        console.error('Failed to fetch courses:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
+  const fetchAuthors = async () => {
+    try {
+      const response = await fetch(api_endpoints.authors);
+      if (response.ok) {
+        const data = await response.json();
+        setAuthors(data.result);
+      } else {
+        console.error('Failed to fetch authors:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching authors:', error);
+    }
+  };
+  const handleSearch = async (term) => {
     setSearchTerm(term);
+    await fetchCourses(term, 'title');
+    if (courses.length === 0) {
+      await fetchCourses(term, 'id');
+    }
   };
 
   const handleAddCourse = () => {
-    navigate('/courses/add');
+    navigate(paths.addCourse);
     onAddCourseClick();
   };
 
@@ -36,16 +79,10 @@ const Courses = ({ courses, authors, onAddCourseClick }) => {
     setSelectedCourse(null);
   };
 
-  const filteredCourses = useMemo(() => {
-    return courses.filter(course =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [courses, searchTerm]);
-
   return (
     <div className="courses">
       <div className="courses__search-bar">
-        <SearchBar courses={courses} onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} />
         <Button onClick={handleAddCourse}>Add New Course</Button>
       </div>
       <div className="courses__list">
@@ -56,7 +93,7 @@ const Courses = ({ courses, authors, onAddCourseClick }) => {
             onBack={handleBackToCourses}
           />
         ) : (
-          filteredCourses.map(course => (
+          courses.map(course => (
             <CourseCard
               key={course.id}
               course={course}
@@ -71,8 +108,6 @@ const Courses = ({ courses, authors, onAddCourseClick }) => {
 };
 
 Courses.propTypes = {
-  courses: PropTypes.array.isRequired,
-  authors: PropTypes.array.isRequired,
   onAddCourseClick: PropTypes.func.isRequired,
 };
 

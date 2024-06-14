@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
+import { placeholderTexts } from '../../constants';
 import './Registration.css'; // Create and import a CSS file for styles
 
 const Registration = () => {
@@ -34,20 +35,20 @@ const Registration = () => {
       <form onSubmit={handleSubmit}>
         <h2>Registration</h2>
         <Input
-          labelText="Name"
-          placeholderText="Enter name"
+          labelText="Name: "
+          placeholder={placeholderTexts.name}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          labelText="Email"
-          placeholderText="Enter email"
+          labelText="Email: "
+          placeholder={placeholderTexts.email}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          labelText="Password"
-          placeholderText="Enter password"
+          labelText="Password: "
+          placeholder={placeholderTexts.password}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
