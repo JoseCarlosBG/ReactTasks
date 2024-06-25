@@ -1,8 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './CourseInfo.css';
 
-const CourseInfo = ({ course, authors, onBack }) => {
+const CourseInfo = ({ authors }) => {
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+  const [course, setCourse] = useState(null);
+
+  useEffect(() => {
+    const fetchCourseDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/courses/${courseId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setCourse(data.result);
+        } else {
+          console.error('Failed to fetch course details:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching course details:', error);
+      }
+    };
+
+    fetchCourseDetails();
+  }, [courseId]);
+
+  const handleBack = () => {
+    navigate('/courses');
+  };
+
+  if (!course) {
+    return <div>Loading...</div>;
+  }
   const courseAuthors = course.authors.map((authorId) => {
     const author = authors.find((author) => author.id === authorId);
     return author ? author.name : 'Unknown Author';
@@ -16,22 +46,13 @@ const CourseInfo = ({ course, authors, onBack }) => {
       <p><strong>Duration:</strong> {course.duration}</p>
       <p><strong>Creation Date:</strong> {course.creationDate}</p>
       <p><strong>Authors:</strong> {courseAuthors.join(', ')}</p>
-      <button onClick={onBack}>Back to courses</button>
+      <button onClick={handleBack}>Back to courses</button>
     </div>
   );
 };
 
 CourseInfo.propTypes = {
-  course: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    duration: PropTypes.number.isRequired,
-    creationDate: PropTypes.string.isRequired,
-    authors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }).isRequired,
-  authors: PropTypes.object.isRequired,
-  onBack: PropTypes.func.isRequired,
+  authors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default CourseInfo;

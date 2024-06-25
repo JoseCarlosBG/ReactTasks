@@ -4,21 +4,20 @@ import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
-import CourseInfo from '../CourseInfo/CourseInfo';
-import { api_endpoints, storageKeys, paths } from '../../constants';
+import { API_ENDPOINTS, STORAGE_KEYS, PATHS } from '../../constants';
 import './Courses.css';
 
 const Courses = ({ onAddCourseClick }) => {
+  const env = 'http://localhost:4000';
   const [courses, setCourses] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem(storageKeys.userToken);
+    const token = localStorage.getItem(STORAGE_KEYS.USER_TOKEN);
     if (token) {
-      navigate(paths.courses);
+      navigate(PATHS.COURSES);
     }
     fetchCourses();
     fetchAuthors();
@@ -27,13 +26,12 @@ const Courses = ({ onAddCourseClick }) => {
   const fetchCourses = async (query = '', type = '') => {
     try {
       let response;
-      if (query!=='' && type!=='') {
-        response = await fetch(`${api_endpoints.filter}${type}=${query}`);
+      if (query !== '' && type !== '') {
+        response = await fetch(`${env + API_ENDPOINTS.FILTER}${type}=${query}`);
+      } else {
+        response = await fetch(`${env + API_ENDPOINTS.COURSES}`);
       }
-      else{
-        response = await fetch(`${api_endpoints.courses}`);
-      }
-      
+
       if (response.ok) {
         const data = await response.json();
         setCourses(data.result);
@@ -47,7 +45,7 @@ const Courses = ({ onAddCourseClick }) => {
 
   const fetchAuthors = async () => {
     try {
-      const response = await fetch(api_endpoints.authors);
+      const response = await fetch(env + API_ENDPOINTS.AUTHORS);
       if (response.ok) {
         const data = await response.json();
         setAuthors(data.result);
@@ -58,25 +56,22 @@ const Courses = ({ onAddCourseClick }) => {
       console.error('Error fetching authors:', error);
     }
   };
+
   const handleSearch = async (term) => {
     setSearchTerm(term);
-    await fetchCourses(term, 'title');
-    if (courses.length === 0) {
-      await fetchCourses(term, 'id');
+    let courseList = await fetchCourses(term, 'title');
+    if (courseList.length === 0) {
+      courseList = await fetchCourses(term, 'id');
     }
   };
 
   const handleAddCourse = () => {
-    navigate(paths.addCourse);
+    navigate(PATHS.ADD_COURSE);
     onAddCourseClick();
   };
 
   const handleShowCourseInfo = (course) => {
-    setSelectedCourse(course);
-  };
-
-  const handleBackToCourses = () => {
-    setSelectedCourse(null);
+    navigate(`/courses/${course.id}`);
   };
 
   return (
@@ -86,22 +81,14 @@ const Courses = ({ onAddCourseClick }) => {
         <Button onClick={handleAddCourse}>Add New Course</Button>
       </div>
       <div className="courses__list">
-        {selectedCourse ? (
-          <CourseInfo 
-            course={selectedCourse} 
-            authors={authors} 
-            onBack={handleBackToCourses}
+        {courses.map((course) => (
+          <CourseCard
+            key={course.id}
+            course={course}
+            authors={authors}
+            onShowCourseInfo={handleShowCourseInfo}
           />
-        ) : (
-          courses.map(course => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              authors={authors}
-              onShowCourseInfo={handleShowCourseInfo}
-            />
-          ))
-        )}
+        ))}
       </div>
     </div>
   );

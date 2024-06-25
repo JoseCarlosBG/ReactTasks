@@ -1,26 +1,25 @@
-// constants.js
-export const api_endpoints = {
-  courses: 'http://localhost:4000/courses/all',
-  filter: 'http://localhost:4000/courses/filter?',
-  authors: 'http://localhost:4000/authors/all',
-  register: 'http://localhost:4000/register',
-  login: 'http://localhost:4000/login',
+export const API_ENDPOINTS = {
+  COURSES: '/courses/all',
+  FILTER: '/courses/filter?',
+  AUTHORS: '/authors/all',
+  REGISTER: '/register',
+  LOGIN: '/login',
 };
 
-export const placeholderTexts = {
-  name: 'Enter name',
-  email: 'Enter email',
-  password: 'Enter password',
+export const PLACEHOLDER_TEXTS = {
+  NAME: 'Enter name',
+  EMAIL: 'Enter email',
+  PASSWORD: 'Enter password',
 };
 
-export const storageKeys = {
-  userName: 'userName',
-  userToken: 'userToken',
+export const STORAGE_KEYS = {
+  USER_NAME: 'userName',
+  USER_TOKEN: 'userToken',
 };
 
-export const paths = {
-  login: '/login',
-  registration: '/registration',
-  courses: '/courses',
-  addCourse: '/courses/add',
+export const PATHS = {
+  LOGIN: '/login',
+  REGISTRATION: '/registration',
+  COURSES: '/courses',
+  ADD_COURSE: '/courses/add',
 };

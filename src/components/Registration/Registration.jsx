@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
-import { placeholderTexts } from '../../constants';
+import { API_ENDPOINTS, PLACEHOLDER_TEXTS } from '../../constants';
 import './Registration.css';
 
 const Registration = () => {
+  const env = 'http://localhost:4000';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,7 +45,7 @@ const Registration = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      const response = await fetch('http://localhost:4000/register', {
+      const response = await fetch(env + API_ENDPOINTS.REGISTER, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,21 +68,21 @@ const Registration = () => {
         <h2>Registration</h2>
         <Input
           labelText="Name: "
-          placeholder={placeholderTexts.name}
+          placeholder={PLACEHOLDER_TEXTS.NAME}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         {errors.name && <p className="error">{errors.name}</p>}
         <Input
           labelText="Email: "
-          placeholder={placeholderTexts.email}
+          placeholder={PLACEHOLDER_TEXTS.EMAIL}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         {errors.email && <p className="error">{errors.email}</p>}
         <Input
           labelText="Password: "
-          placeholder={placeholderTexts.password}
+          placeholder={PLACEHOLDER_TEXTS.PASSWORD}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

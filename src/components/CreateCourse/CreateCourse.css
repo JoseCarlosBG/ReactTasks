@@ -3,6 +3,8 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #fff;
+  max-width: 800px; /* Add a max-width for better alignment */
+  margin: auto; /* Center the form */
 }
 
 .create-course__form {
@@ -20,15 +22,101 @@
   border-radius: 5px;
 }
 
-.create-course__add-author {
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.authors {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Add some gap between the sections */
+}
+
+.authors__list, .selected-authors {
+  width: 45%; /* Adjust the width for proper alignment */
+}
+
+.authors__list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.authors__list-item button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.authors__list-item button:hover {
+  background-color: #0056b3;
+}
+
+.authors__new {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 10px;
 }
 
+.authors__new input {
+  flex-grow: 1;
+}
+
+.selected-authors {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.selected-authors h4 {
+  margin-top: 0;
+}
+
+.selected-authors ul {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.selected-authors p {
+  margin: 0;
+}
+
 .create-course__buttons {
   display: flex;
   gap: 10px;
   margin-top: 20px;
+}
+
+.button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button--secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.button--secondary:hover {
+  background-color: #5a6268;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
 }
