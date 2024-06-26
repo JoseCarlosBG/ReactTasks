@@ -3,8 +3,8 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #fff;
-  max-width: 800px; /* Add a max-width for better alignment */
-  margin: auto; /* Center the form */
+  max-width: 800px;
+  margin: auto;
 }
 
 .create-course__form {
@@ -31,11 +31,11 @@
 .authors {
   display: flex;
   justify-content: space-between;
-  gap: 20px; /* Add some gap between the sections */
+  gap: 20px;
 }
 
 .authors__list, .selected-authors {
-  width: 45%; /* Adjust the width for proper alignment */
+  width: 45%;
 }
 
 .authors__list-item {
@@ -82,15 +82,14 @@
 
 .selected-authors h4 {
   margin-top: 0;
+  margin-bottom: 20px;
 }
 
-.selected-authors ul {
-  padding-left: 20px;
-  margin-top: 10px;
-}
-
-.selected-authors p {
-  margin: 0;
+.selected-authors ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .create-course__buttons {
