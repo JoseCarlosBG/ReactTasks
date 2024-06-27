@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Input.css'; // Using CSS Modules for scoped styles
 
-const Input = ({ labelText, placeholderText, onChange }) => {
+const Input = ({ labelText, ...props }) => {
   return (
     <div className={styles.inputContainer}>
       <label className={styles.inputLabel}>
         {labelText}
-        <input 
-          type="text" 
-          className={styles.inputField} 
-          placeholder={placeholderText} 
-          onChange={onChange} 
+        <input
+          className={styles.inputField}
           aria-label={labelText} // Adding aria-label for accessibility
+          {...props}
         />
       </label>
     </div>
@@ -21,12 +19,6 @@ const Input = ({ labelText, placeholderText, onChange }) => {
 
 Input.propTypes = {
   labelText: PropTypes.string.isRequired,
-  placeholderText: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-};
-
-Input.defaultProps = {
-  placeholderText: '',
 };
 
 export default Input;

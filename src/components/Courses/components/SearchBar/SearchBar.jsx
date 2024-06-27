@@ -24,7 +24,7 @@ const SearchBar = ({ onSearch }) => {
     <div className={styles.searchBar}>
       <Input 
         labelText="Search Courses:" 
-        placeholderText="Enter course title or ID" 
+        placeholder="Enter course title or ID" 
         value={searchTerm} 
         onChange={handleInputChange} 
         aria-label="Search input" 

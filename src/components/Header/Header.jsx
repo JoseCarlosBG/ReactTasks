@@ -1,23 +1,51 @@
 import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './components/Logo/Logo';
-import './Header.css';
 import PropTypes from 'prop-types';
+import './Header.css';
 
-const Header = ({ name, onButtonClick }) => {
+const Header = ({ userName, onLogout }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleRegistrationClick = () => {
+    navigate('/registration');
+  };
+
   return (
     <header className="header">
-      <Logo />
-      <div className="header__user-info">
-        <span>{name}</span>
-        <button className="button" onClick={onButtonClick}>Logout</button>
+      <div className="header-logo">
+        <Logo />
       </div>
+      <nav className="header-nav">
+        {!userName && (
+          <>
+            <button onClick={handleRegistrationClick}>Register</button>
+            <button onClick={handleLoginClick}>Login</button>
+          </>
+        )}
+      </nav>
+      {userName && location.pathname !== '/login' && location.pathname !== '/registration' && (
+        <div className="header-user">
+          <span>{userName}</span>
+          <button onClick={onLogout}>Logout</button>
+        </div>
+      )}
     </header>
   );
 };
 
 Header.propTypes = {
-  name: PropTypes.string.isRequired,
-  onButtonClick: PropTypes.func.isRequired,
+  userName: PropTypes.string,
+  onLogout: PropTypes.func.isRequired,
+};
+
+Header.defaultProps = {
+  userName: '',
 };
 
 export default Header;
