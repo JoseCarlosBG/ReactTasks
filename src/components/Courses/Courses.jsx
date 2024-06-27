@@ -59,9 +59,9 @@ const Courses = ({ onAddCourseClick }) => {
 
   const handleSearch = async (term) => {
     setSearchTerm(term);
-    let courseList = await fetchCourses(term, 'title');
+    const courseList = await fetchCourses(term, 'title');
     if (courseList.length === 0) {
-      courseList = await fetchCourses(term, 'id');
+      await fetchCourses(term, 'id');
     }
   };
 

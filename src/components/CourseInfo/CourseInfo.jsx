@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './CourseInfo.css';
+import { ENV } from '../../constants';
 
 const CourseInfo = ({ authors }) => {
   const { courseId } = useParams();
@@ -11,7 +12,7 @@ const CourseInfo = ({ authors }) => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/courses/${courseId}`);
+        const response = await fetch(ENV + `/courses/${courseId}`);
         if (response.ok) {
           const data = await response.json();
           setCourse(data.result);

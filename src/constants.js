@@ -23,3 +23,5 @@ export const PATHS = {
   COURSES: '/courses',
   ADD_COURSE: '/courses/add',
 };
+
+export const ENV = 'http://localhost:4000';

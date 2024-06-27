@@ -7,13 +7,12 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 import './App.css';
-import { API_ENDPOINTS, STORAGE_KEYS, PATHS } from './constants';
+import { API_ENDPOINTS, STORAGE_KEYS, PATHS, ENV } from './constants';
 
 const App = () => {
-  const env = 'http://localhost:4000';
   const [courses, setCourses] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [USER_NAME, setUserName] = useState(localStorage.getItem(STORAGE_KEYS.USER_NAME) || '');
+  const [userName, setUserName] = useState(localStorage.getItem(STORAGE_KEYS.USER_NAME) || '');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +29,7 @@ const App = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const response = await fetch(env + API_ENDPOINTS.AUTHORS);
+        const response = await fetch(ENV + API_ENDPOINTS.AUTHORS);
         if (response.ok) {
           const data = await response.json();
           setAuthors(data.result);
@@ -43,7 +42,7 @@ const App = () => {
     };
 
     fetchAuthors();
-  }, [env]);
+  }, []);
 
   const handleAddCourseClick = () => {
     navigate(PATHS.ADD_COURSE);
@@ -67,7 +66,7 @@ const App = () => {
 
   return (
     <div>
-      <Header userName={USER_NAME} onLogout={handleLogout} />
+      <Header userName={userName} onLogout={handleLogout} />
       <Routes>
         <Route path={PATHS.COURSES} element={<Courses onAddCourseClick={handleAddCourseClick} />} />
         <Route path={PATHS.ADD_COURSE} element={<CreateCourse authors={authors} setAuthors={setAuthors} onCreateCourse={handleCreateCourse} onCancel={handleCancelCourseCreation} />} />
