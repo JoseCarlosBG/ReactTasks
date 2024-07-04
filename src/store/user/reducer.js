@@ -1,10 +1,10 @@
-// src/store/user/reducer.js
+import { STORAGE_KEYS } from '../../constants';
 import { LOGIN_USER, LOGOUT_USER } from './types';
 
 const initialState = {
   name: '',
   email: '',
-  token: '',
+  token: localStorage.getItem(STORAGE_KEYS.USER_TOKEN) || '',
 };
 
 const userReducer = (state = initialState, action) => {
@@ -17,7 +17,13 @@ const userReducer = (state = initialState, action) => {
         token: action.payload.token,
       };
     case LOGOUT_USER:
-      return initialState;
+      localStorage.removeItem(STORAGE_KEYS.USER_TOKEN);
+      return {
+        ...state,
+        name: '',
+        email: '',
+        token: '',
+      };
     default:
       return state;
   }

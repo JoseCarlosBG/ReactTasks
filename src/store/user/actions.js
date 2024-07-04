@@ -1,43 +1,43 @@
-// src/store/user/actions.js
+import { API_ENDPOINTS, STORAGE_KEYS, ENV } from '../../constants';
 import { LOGIN_USER, LOGOUT_USER } from './types';
-import { ENV, API_ENDPOINTS } from '../../constants';
 
-// Action creator for login
-export const loginUserAction = (payload) => ({ type: LOGIN_USER, payload });
+export const loginUserSuccess = (userData) => ({
+  type: LOGIN_USER,
+  payload: userData,
+});
 
-// Async action for login
-export const loginUser = (email, password) => {
-  return async (dispatch) => {
-    try {
-      const response = await fetch(`${ENV + API_ENDPOINTS.LOGIN}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+export const logoutUser = () => ({
+  type: LOGOUT_USER,
+});
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.successful && result.result) {
-          const token = result.result.replace('Bearer ', '');
-          const user = {
-            token,
-            name: result.user.name,
-            email,
-          };
+export const loginUser = (email, password) => async (dispatch) => {
+  try {
+    const response = await fetch(`${ENV}${API_ENDPOINTS.LOGIN}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-          localStorage.setItem('userToken', token);
-          localStorage.setItem('userName', result.user.name);
-          dispatch(loginUserAction(user));
-        } else {
-          console.error('Login failed:', result);
-        }
-      } else {
-        console.error('Login failed with status:', response.status);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+    if (!response.ok) {
+      throw new Error('Login failed');
     }
-  };
+
+    const data = await response.json();
+    const token = data.result;
+    const user = data.user;
+    
+    localStorage.setItem(STORAGE_KEYS.USER_TOKEN, token);
+
+    dispatch(loginUserSuccess({
+      name: user.name,
+      email: user.email,
+      token,
+    }));
+
+    return Promise.resolve();
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };

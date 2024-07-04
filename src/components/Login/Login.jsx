@@ -1,4 +1,3 @@
-// src/components/Login/Login.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -10,18 +9,18 @@ import { loginUser } from '../../store/user/actions';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(loginUser(email, password))
-      .then(() => {
-        navigate('/courses');
-      })
-      .catch((error) => {
-        console.error('Login failed:', error);
-      });
+
+    try {
+      await dispatch(loginUser(email, password));
+      navigate('/courses');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (
