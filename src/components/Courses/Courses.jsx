@@ -1,68 +1,36 @@
-import React, { useState, useEffect } from 'react';
+// Courses.js
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import { API_ENDPOINTS, STORAGE_KEYS, PATHS } from '../../constants';
+import { fetchCourses } from '../../store/courses/actions'; // Adjust the import path as necessary
+import { fetchAuthors } from '../../store/authors/actions'; // Adjust the import path as necessary
 import './Courses.css';
 
 const Courses = ({ onAddCourseClick }) => {
-  const env = 'http://localhost:4000';
-  const [courses, setCourses] = useState([]);
-  const [authors, setAuthors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const courses = useSelector((state) => state.courses);
+  const authors = useSelector((state) => state.authors);
 
   useEffect(() => {
     const token = localStorage.getItem(STORAGE_KEYS.USER_TOKEN);
     if (token) {
       navigate(PATHS.COURSES);
     }
-    fetchCourses();
-    fetchAuthors();
-  }, [navigate]);
+    dispatch(fetchCourses());
+    dispatch(fetchAuthors());
+  }, [dispatch, navigate]);
 
-  const fetchCourses = async (query = '', type = '') => {
-    try {
-      let response;
-      if (query !== '' && type !== '') {
-        response = await fetch(`${env + API_ENDPOINTS.FILTER}${type}=${query}`);
-      } else {
-        response = await fetch(`${env + API_ENDPOINTS.COURSES}`);
-      }
-
-      if (response.ok) {
-        const data = await response.json();
-        setCourses(data.result);
-      } else {
-        console.error('Failed to fetch courses:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-    }
-  };
-
-  const fetchAuthors = async () => {
-    try {
-      const response = await fetch(env + API_ENDPOINTS.AUTHORS);
-      if (response.ok) {
-        const data = await response.json();
-        setAuthors(data.result);
-      } else {
-        console.error('Failed to fetch authors:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching authors:', error);
-    }
-  };
-
-  const handleSearch = async (term) => {
+  const handleSearch = (term) => {
     setSearchTerm(term);
-    const courseList = await fetchCourses(term, 'title');
-    if (courseList.length === 0) {
-      await fetchCourses(term, 'id');
-    }
+    dispatch(fetchCourses(term, 'title'));
   };
 
   const handleAddCourse = () => {

@@ -1,8 +1,13 @@
+// src/components/CourseCard/CourseCard.js
 import React from 'react';
-import './CourseCard.css';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { deleteCourse } from '../../../../store/courses/actions'; // Import the delete action
+import './CourseCard.css';
 
 const CourseCard = ({ course, authors, onShowCourseInfo }) => {
+  const dispatch = useDispatch();
+
   const getAuthorNames = (authorIds) => {
     return authorIds.map(id => {
       const author = authors.find(author => author.id === id);
@@ -14,6 +19,15 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
     onShowCourseInfo(course);
   };
 
+  const handleDeleteCourse = () => {
+    dispatch(deleteCourse(course.id));
+  };
+
+  const handleUpdateCourse = () => {
+    // Update functionality will be implemented later
+    console.log('Update course clicked for course ID:', course.id);
+  };
+
   return (
     <div className="course-card">
       <h3 className="course-card__title">{course.title}</h3>
@@ -23,8 +37,10 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
         <p><strong>Duration:</strong> {course.duration} hours</p>
         <p><strong>Created:</strong> {course.creationDate}</p>
       </div>
-      <div className="course-card__button">
+      <div className="course-card__buttons">
         <button className="button" onClick={handleShowCourseInfo}>Show course</button>
+        <button className="button" onClick={handleUpdateCourse}>Update</button>
+        <button className="button" onClick={handleDeleteCourse}>Delete</button>
       </div>
     </div>
   );

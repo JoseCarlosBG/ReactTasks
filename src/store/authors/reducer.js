@@ -1,15 +1,21 @@
-import * from './types.js'
+// src/store/authors/reducer.js
+
+import { SAVE_AUTHORS, ADD_AUTHOR, DELETE_AUTHOR } from './types';
 
 export const authorsInitialState = [];
+
 // Use the initialState as a default value
-export  const authorsReducer = (state = authorsInitialState, action) => {
+const authorsReducer = (state = authorsInitialState, action) => {
   switch (action.type) {
-    // in this case we need to return 
-    case SAVE_AUTHORS: return action.payload;
+    case SAVE_AUTHORS:
+      return action.payload;
     
-    case ADD_AUTHOR: return [...state, action,payload];
+    case ADD_AUTHOR:
+      return [...state, action.payload];
     
     default:
-      return state
+      return state;
   }
-}
+};
+
+export default authorsReducer;

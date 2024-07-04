@@ -1,15 +1,26 @@
-import * from './types.js'
+// src/store/user/reducer.js
+import { LOGIN_USER, LOGOUT_USER } from './types';
 
-export const usersInitialState = [];
-// Use the initialState as a default value
-export  const usersReducer = (state = usersInitialState, action) => {
+const initialState = {
+  name: '',
+  email: '',
+  token: '',
+};
+
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    // in this case we need to return 
-    case SAVE_USERS: return action.payload;
-    
-    case ADD_USER: return [...state, action,payload];
-    
+    case LOGIN_USER:
+      return {
+        ...state,
+        name: action.payload.name,
+        email: action.payload.email,
+        token: action.payload.token,
+      };
+    case LOGOUT_USER:
+      return initialState;
     default:
-      return state
+      return state;
   }
-}
+};
+
+export default userReducer;
