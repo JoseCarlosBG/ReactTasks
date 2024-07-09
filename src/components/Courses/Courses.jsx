@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+// src/components/Courses/Courses.jsx
+
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -6,13 +8,12 @@ import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import { STORAGE_KEYS, PATHS } from '../../constants';
-import { getCourses, getAuthors} from '../../store/selectors';
+import { getCourses, getAuthors } from '../../store/selectors';
 import { fetchCourses } from '../../store/courses/actions'; 
 import { fetchAuthors } from '../../store/authors/actions'; 
 import './Courses.css';
 
 const Courses = ({ onAddCourseClick }) => {
-  const [setSearchTerm] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,8 +30,7 @@ const Courses = ({ onAddCourseClick }) => {
   }, [dispatch, navigate]);
 
   const handleSearch = (term) => {
-    setSearchTerm(term);
-    dispatch(fetchCourses(term, 'title'));
+    dispatch(fetchCourses(term, 'title')); 
   };
 
   const handleAddCourse = () => {
@@ -41,6 +41,9 @@ const Courses = ({ onAddCourseClick }) => {
   const handleShowCourseInfo = (course) => {
     navigate(`/courses/${course.id}`);
   };
+
+  useEffect(() => {
+  }, [courses]);
 
   return (
     <div className="courses">

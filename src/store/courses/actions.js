@@ -8,10 +8,15 @@ export const addCourseAction = (payload) => ({ type: ADD_COURSE, payload });
 export const deleteCourseAction = (payload) => ({ type: DELETE_COURSE, payload });
 
 // Async action to fetch courses
-export const fetchCourses = () => {
+export const fetchCourses = (searchTerm = '', searchField = '') => {
   return async (dispatch) => {
     try {
-      const response = await fetch(`${ENV + API_ENDPOINTS.COURSES}`);
+      let url = `${ENV + API_ENDPOINTS.FILTER}`;
+      if (searchTerm && searchField) {
+        url += `${searchField}=${searchTerm}`;
+      }
+
+      const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         dispatch(saveCoursesAction(data.result));
@@ -23,6 +28,7 @@ export const fetchCourses = () => {
     }
   };
 };
+
 
 // Async action to fetch a course by ID
 export const fetchCourseById = (id) => {
