@@ -1,10 +1,9 @@
-import { STORAGE_KEYS } from '../../constants';
 import { LOGIN_USER, LOGOUT_USER } from './types';
 
 const initialState = {
   name: '',
   email: '',
-  token: localStorage.getItem(STORAGE_KEYS.USER_TOKEN) || '',
+  token: '',
 };
 
 const userReducer = (state = initialState, action) => {
@@ -17,13 +16,7 @@ const userReducer = (state = initialState, action) => {
         token: action.payload.token,
       };
     case LOGOUT_USER:
-      localStorage.removeItem(STORAGE_KEYS.USER_TOKEN);
-      return {
-        ...state,
-        name: '',
-        email: '',
-        token: '',
-      };
+      return initialState;
     default:
       return state;
   }

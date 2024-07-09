@@ -1,8 +1,8 @@
-// src/components/CourseInfo/CourseInfo.js
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { getCourseById, getCourseAuthors } from '../../store/selectors';
 import { fetchCourseById } from '../../store/courses/actions';
 import './CourseInfo.css';
 
@@ -10,8 +10,8 @@ const CourseInfo = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const course = useSelector((state) => state.courses.find((course) => course.id === courseId));
-  const authors = useSelector((state) => state.authors);
+  const course = useSelector((state) => getCourseById(state, courseId));
+  const courseAuthors = useSelector((state) => getCourseAuthors(state, course));
 
   useEffect(() => {
     if (!course) {
@@ -26,11 +26,6 @@ const CourseInfo = () => {
   if (!course) {
     return <div>Loading...</div>;
   }
-
-  const courseAuthors = course.authors.map((authorId) => {
-    const author = authors.find((author) => author.id === authorId);
-    return author ? author.name : 'Unknown Author';
-  });
 
   return (
     <div className="course-info-container">

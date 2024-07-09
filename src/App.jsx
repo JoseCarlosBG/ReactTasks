@@ -7,7 +7,8 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 import './App.css';
-import { API_ENDPOINTS, STORAGE_KEYS, PATHS, ENV } from './constants';
+import { STORAGE_KEYS, PATHS } from './constants';
+import { fetchAuthors as fetchAuthorsService } from './services'; 
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -29,13 +30,8 @@ const App = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const response = await fetch(ENV + API_ENDPOINTS.AUTHORS);
-        if (response.ok) {
-          const data = await response.json();
-          setAuthors(data.result);
-        } else {
-          console.error('Failed to fetch authors:', response.status);
-        }
+        const authorsData = await fetchAuthorsService();
+        setAuthors(authorsData);
       } catch (error) {
         console.error('Error fetching authors:', error);
       }

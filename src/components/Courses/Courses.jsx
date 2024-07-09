@@ -1,4 +1,3 @@
-// Courses.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,18 +5,19 @@ import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
-import { API_ENDPOINTS, STORAGE_KEYS, PATHS } from '../../constants';
-import { fetchCourses } from '../../store/courses/actions'; // Adjust the import path as necessary
-import { fetchAuthors } from '../../store/authors/actions'; // Adjust the import path as necessary
+import { STORAGE_KEYS, PATHS } from '../../constants';
+import { getCourses, getAuthors} from '../../store/selectors';
+import { fetchCourses } from '../../store/courses/actions'; 
+import { fetchAuthors } from '../../store/authors/actions'; 
 import './Courses.css';
 
 const Courses = ({ onAddCourseClick }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [setSearchTerm] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const courses = useSelector((state) => state.courses);
-  const authors = useSelector((state) => state.authors);
+  const courses = useSelector(getCourses);
+  const authors = useSelector(getAuthors);
 
   useEffect(() => {
     const token = localStorage.getItem(STORAGE_KEYS.USER_TOKEN);
