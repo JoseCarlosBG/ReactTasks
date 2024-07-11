@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   AUTHORS: '/authors/all',
   REGISTER: '/register',
   LOGIN: '/login',
+  ROOT_COURSES: '/courses',
 };
 
 export const PLACEHOLDER_TEXTS = {

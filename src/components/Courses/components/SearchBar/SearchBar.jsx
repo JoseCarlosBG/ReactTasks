@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from '../../../../common/Input/Input';
 import Button from '../../../../common/Button/Button';
-import styles from './SearchBar.css'; // Using CSS Modules for scoped styles
+import styles from './SearchBar.css'; 
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');

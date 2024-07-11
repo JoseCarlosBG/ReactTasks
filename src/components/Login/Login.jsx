@@ -1,55 +1,25 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import './Login.css';
+import { loginUser } from '../../store/user/actions';
 
-const Login = ({ setUserName }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      // Check if the response is not OK
-      if (!response.ok) {
-        console.error('Login failed with status:', response.status);
-        return;
-      }
-
-      const result = await response.json();
-
-      // Check if the result is successful and contains a token
-      if (!result.successful || !result.result) {
-        console.error('Token or username is missing in the response');
-        return;
-      }
-
-      // Extract token from the result and set it in local storage
-      const token = result.result.replace('Bearer ', '');
-      localStorage.setItem('userToken', token);
-
-      // Set user name if available
-      if (result.user && result.user.name) {
-        localStorage.setItem('userName', result.user.name);
-        setUserName(result.user.name);
-      }
-
-      // Navigate to the courses page
+      await dispatch(loginUser(email, password));
       navigate('/courses');
-      
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Login failed:', error);
     }
   };
 

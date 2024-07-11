@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from './components/Logo/Logo';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { logoutUser } from '../../store/user/actions'; // Adjust path as per your file structure
 import './Header.css';
 
 const Header = ({ userName, onLogout }) => {
@@ -14,6 +16,11 @@ const Header = ({ userName, onLogout }) => {
 
   const handleRegistrationClick = () => {
     navigate('/registration');
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    navigate('/login');
   };
 
   return (
@@ -32,7 +39,7 @@ const Header = ({ userName, onLogout }) => {
       {userName && location.pathname !== '/login' && location.pathname !== '/registration' && (
         <div className="header-user">
           <span>{userName}</span>
-          <button onClick={onLogout}>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       )}
     </header>
@@ -48,4 +55,12 @@ Header.defaultProps = {
   userName: '',
 };
 
-export default Header;
+const mapStateToProps = (state) => ({
+  userName: state.user.name,
+});
+
+const mapDispatchToProps = {
+  onLogout: logoutUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
