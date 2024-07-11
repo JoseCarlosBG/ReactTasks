@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
-import { STORAGE_KEYS, PATHS } from '../../constants';
+import { PATHS } from '../../constants';
 import { getCourses, getAuthors } from '../../store/selectors';
 import { fetchCourses } from '../../store/courses/actions'; 
 import { fetchAuthors } from '../../store/authors/actions'; 
@@ -17,18 +17,18 @@ const Courses = ({ onAddCourseClick }) => {
 
   const courses = useSelector(getCourses);
   const authors = useSelector(getAuthors);
+  const token = useSelector((state) => state.user.token);;
 
   useEffect(() => {
-    const token = localStorage.getItem(STORAGE_KEYS.USER_TOKEN);
     if (token) {
       navigate(PATHS.COURSES);
     }
-    dispatch(fetchCourses());
-    dispatch(fetchAuthors());
+    dispatch(fetchCourses(token));
+    dispatch(fetchAuthors(token));
   }, [dispatch, navigate]);
 
   const handleSearch = (term) => {
-    dispatch(fetchCourses(term, 'title')); 
+    dispatch(fetchCourses(token, term, 'title'));
   };
 
   const handleAddCourse = () => {

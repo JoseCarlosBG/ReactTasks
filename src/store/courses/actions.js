@@ -8,15 +8,14 @@ export const addCourseAction = (payload) => ({ type: ADD_COURSE, payload });
 export const deleteCourseAction = (payload) => ({ type: DELETE_COURSE, payload });
 
 // Async action to fetch courses
-export const fetchCourses = (searchTerm = '', searchField = '') => {
+export const fetchCourses = (token, searchTerm = '', searchBy = 'title') => {
   return async (dispatch) => {
     try {
-      let url = `${ENV + API_ENDPOINTS.FILTER}`;
-      if (searchTerm && searchField) {
-        url += `${searchField}=${searchTerm}`;
-      }
-
-      const response = await fetch(url);
+      const response = await fetch(`${ENV + API_ENDPOINTS.COURSES}?searchTerm=${searchTerm}&searchBy=${searchBy}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         dispatch(saveCoursesAction(data.result));
