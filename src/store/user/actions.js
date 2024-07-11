@@ -15,8 +15,10 @@ export const loginUser = (email, password) => {
         email,
       };
 
+      // Save token to local storage
       localStorage.setItem('userToken', token);
       localStorage.setItem('userName', user.name);
+
       dispatch(loginUserAction(userData));
     } catch (error) {
       console.error('Error during login:', error);
@@ -25,4 +27,13 @@ export const loginUser = (email, password) => {
 };
 
 // Action creator for logout
-export const logoutUser = () => ({ type: LOGOUT_USER });
+export const logoutUserAction = () => ({ type: LOGOUT_USER });
+
+// Async action for logout
+export const logoutUser = () => {
+  return (dispatch) => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userName');
+    dispatch(logoutUserAction());
+  };
+};

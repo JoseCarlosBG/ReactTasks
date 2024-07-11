@@ -19,9 +19,8 @@ const Header = ({ userName, onLogout }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userToken'); // Remove token from localStorage
-    onLogout(); // Dispatch logout action
-    navigate('/login'); // Redirect to login page
+    onLogout();
+    navigate('/login');
   };
 
   return (
