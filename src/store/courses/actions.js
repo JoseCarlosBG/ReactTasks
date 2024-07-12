@@ -11,7 +11,14 @@ export const deleteCourseAction = (payload) => ({ type: DELETE_COURSE, payload }
 export const fetchCourses = (token, searchTerm = '', searchBy = 'title') => {
   return async (dispatch) => {
     try {
-      const response = await fetch(`${ENV + API_ENDPOINTS.COURSES}?searchTerm=${searchTerm}&searchBy=${searchBy}`, {
+      let url;
+      if (searchTerm===''){
+        url=`${ENV + API_ENDPOINTS.COURSES}`
+      }
+      else{
+        url=`${ENV + API_ENDPOINTS.FILTER}${searchBy}=${searchTerm}`;
+      }
+      const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +64,7 @@ export const deleteCourse = (id) => {
       if (response.ok) {
         dispatch(deleteCourseAction(id));
         // Optionally, refetch the courses list to ensure the state is up-to-date
-        const coursesResponse = await fetch(`${ENV + API_ENDPOINTS.COURSES}`);
+        const coursesResponse = await fetch(`${ENV + API_ENDPOINTS.ROOT_COURSES}`);
         if (coursesResponse.ok) {
           const data = await coursesResponse.json();
           dispatch(saveCoursesAction(data.result));
