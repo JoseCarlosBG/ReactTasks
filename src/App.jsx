@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
@@ -44,7 +44,7 @@ const App = () => {
     navigate(PATHS.ADD_COURSE);
   };
 
-  const handleCreateCourse = (newCourse) => {
+  const handleCourseForm = (newCourse) => {
     setCourses([...courses, newCourse]);
     navigate(PATHS.COURSES);
   };
@@ -65,7 +65,7 @@ const App = () => {
       <Header userName={userName} onLogout={handleLogout} />
       <Routes>
         <Route path={PATHS.COURSES} element={<Courses onAddCourseClick={handleAddCourseClick} />} />
-        <Route path={PATHS.ADD_COURSE} element={<CreateCourse authors={authors} setAuthors={setAuthors} onCreateCourse={handleCreateCourse} onCancel={handleCancelCourseCreation} />} />
+        <Route path={PATHS.ADD_COURSE} element={<CourseForm authors={authors} setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />} />
         <Route path={PATHS.REGISTRATION} element={<Registration />} />
         <Route path={PATHS.LOGIN} element={<Login setUserName={setUserName} />} />
         <Route path="/courses/:courseId" element={<CourseInfo authors={authors} />} />

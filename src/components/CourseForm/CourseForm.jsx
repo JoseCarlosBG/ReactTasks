@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import './CreateCourse.css';
+import './CourseForm.css';
 
-const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
+const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const durationRef = useRef(null);
@@ -59,7 +59,7 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
         creationDate: creationDateRef.current.value,
         authors: selectedAuthors.map(author => author.id),
       };
-      onCreateCourse(newCourse);
+      onCourseForm(newCourse);
       navigate('/courses');
     }
   };
@@ -170,11 +170,11 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   );
 };
 
-CreateCourse.propTypes = {
+CourseForm.propTypes = {
   authors: PropTypes.array.isRequired,
   setAuthors: PropTypes.func.isRequired,
-  onCreateCourse: PropTypes.func.isRequired,
+  onCourseForm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 
-export default CreateCourse;
+export default CourseForm;
