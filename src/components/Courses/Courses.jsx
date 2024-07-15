@@ -17,17 +17,21 @@ const Courses = ({ onAddCourseClick }) => {
 
   const courses = useSelector(getCourses);
   const authors = useSelector(getAuthors);
-  const token = useSelector((state) => state.user.token);;
+  const token = useSelector((state) => state.user.token);
+  const isAuth = useSelector((state) => state.user.isAuth);
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   useEffect(() => {
-    if (token) {
-      navigate(PATHS.COURSES);
+    if (!isAuth) {
+      navigate('/login');
+    } else {
+      dispatch(fetchCourses(token));
+      dispatch(fetchAuthors(token));
     }
-    dispatch(fetchCourses(token));
-    dispatch(fetchAuthors(token));
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, token, isAuth]);
 
   const handleSearch = (term) => {
+    setSearchTerm(term);
     dispatch(fetchCourses(token, term, 'title'));
   };
 
@@ -40,8 +44,22 @@ const Courses = ({ onAddCourseClick }) => {
     navigate(`/courses/${course.id}`);
   };
 
-  useEffect(() => {
-  }, [courses]);
+  const renderCourses = () => {
+    if (courses.length === 0) {
+      return searchTerm 
+        ? <p>No courses match with the search</p>
+        : <p>There are no available courses</p>;
+    }
+
+    return courses.map((course) => (
+      <CourseCard
+        key={course.id}
+        course={course}
+        authors={authors}
+        onShowCourseInfo={handleShowCourseInfo}
+      />
+    ));
+  };
 
   return (
     <div className="courses">
@@ -50,14 +68,7 @@ const Courses = ({ onAddCourseClick }) => {
         <Button onClick={handleAddCourse}>Add New Course</Button>
       </div>
       <div className="courses__list">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            course={course}
-            authors={authors}
-            onShowCourseInfo={handleShowCourseInfo}
-          />
-        ))}
+        {renderCourses()}
       </div>
     </div>
   );

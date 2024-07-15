@@ -13,11 +13,13 @@ export const loginUser = (email, password) => {
         token,
         name: user.name,
         email,
+        role: user.role,
       };
 
       // Save token to local storage
       localStorage.setItem('userToken', token);
       localStorage.setItem('userName', user.name);
+      localStorage.setItem('userRole', user.role);
 
       dispatch(loginUserAction(userData));
     } catch (error) {
@@ -34,6 +36,7 @@ export const logoutUser = () => {
   return (dispatch) => {
     localStorage.removeItem('userToken');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
     dispatch(logoutUserAction());
   };
 };

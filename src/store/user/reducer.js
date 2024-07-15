@@ -1,9 +1,11 @@
 import { LOGIN_USER, LOGOUT_USER } from './types';
 
 const initialState = {
+  isAuth: false, 
   name: '',
   email: '',
   token: '',
+  role: '',
 };
 
 const userReducer = (state = initialState, action) => {
@@ -11,9 +13,11 @@ const userReducer = (state = initialState, action) => {
     case LOGIN_USER:
       return {
         ...state,
+        isAuth: true,
         name: action.payload.name,
         email: action.payload.email,
         token: action.payload.token,
+        role: action.payload.role,
       };
     case LOGOUT_USER:
       return initialState;

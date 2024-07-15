@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { logoutUser } from '../../store/user/actions'; // Adjust path as per your file structure
 import './Header.css';
 
-const Header = ({ userName, onLogout }) => {
+const Header = ({ userName, isAuth, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -19,8 +19,8 @@ const Header = ({ userName, onLogout }) => {
   };
 
   const handleLogout = () => {
-    onLogout();
-    navigate('/login');
+    onLogout(); // Dispatch logout action
+    navigate('/login'); // Redirect to login page
   };
 
   return (
@@ -29,14 +29,14 @@ const Header = ({ userName, onLogout }) => {
         <Logo />
       </div>
       <nav className="header-nav">
-        {!userName && (
+        {!isAuth && (
           <>
             <button onClick={handleRegistrationClick}>Register</button>
             <button onClick={handleLoginClick}>Login</button>
           </>
         )}
       </nav>
-      {userName && location.pathname !== '/login' && location.pathname !== '/registration' && (
+      {isAuth && location.pathname !== '/login' && location.pathname !== '/registration' && (
         <div className="header-user">
           <span>{userName}</span>
           <button onClick={handleLogout}>Logout</button>
@@ -48,6 +48,7 @@ const Header = ({ userName, onLogout }) => {
 
 Header.propTypes = {
   userName: PropTypes.string,
+  isAuth: PropTypes.bool.isRequired,
   onLogout: PropTypes.func.isRequired,
 };
 
@@ -57,6 +58,7 @@ Header.defaultProps = {
 
 const mapStateToProps = (state) => ({
   userName: state.user.name,
+  isAuth: state.user.isAuth,
 });
 
 const mapDispatchToProps = {
