@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar/SearchBar';
 import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
+import EmptyCourseList from '../EmptyCourseList/EmptyCourseList';
 import { PATHS } from '../../constants';
 import { getCourses, getAuthors } from '../../store/selectors';
 import { fetchCourses } from '../../store/courses/actions'; 
@@ -60,6 +61,10 @@ const Courses = ({ onAddCourseClick }) => {
       />
     ));
   };
+
+  if (courses.length === 0) {
+    return <EmptyCourseList onAddCourseClick={handleAddCourse} />;
+  }
 
   return (
     <div className="courses">
