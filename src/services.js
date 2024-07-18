@@ -43,3 +43,15 @@ export const loginUser = async (email, password) => {
     throw error;
   }
 };
+
+export const getUserData = async (token) => {
+  const response = await fetch('/users/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch user data');
+  }
+  return response.json();
+};

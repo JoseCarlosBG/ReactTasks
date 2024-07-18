@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Logo from './components/Logo/Logo';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { logoutUser } from '../../store/user/actions'; // Adjust path as per your file structure
+import PropTypes from 'prop-types';
+import Logo from './components/Logo/Logo';
+import { logoutUser } from '../../store/user/actions';
 import './Header.css';
 
-const Header = ({ userName, isAuth, onLogout }) => {
+const Header = ({ userName, token, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,9 +18,24 @@ const Header = ({ userName, isAuth, onLogout }) => {
     navigate('/registration');
   };
 
-  const handleLogout = () => {
-    onLogout(); // Dispatch logout action
-    navigate('/login'); // Redirect to login page
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/logout', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        onLogout();
+        navigate('/login');
+      } else {
+        console.error('Failed to logout:', response.status);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -29,14 +44,14 @@ const Header = ({ userName, isAuth, onLogout }) => {
         <Logo />
       </div>
       <nav className="header-nav">
-        {!isAuth && (
+        {!userName && (
           <>
             <button onClick={handleRegistrationClick}>Register</button>
             <button onClick={handleLoginClick}>Login</button>
           </>
         )}
       </nav>
-      {isAuth && location.pathname !== '/login' && location.pathname !== '/registration' && (
+      {userName && location.pathname !== '/login' && location.pathname !== '/registration' && (
         <div className="header-user">
           <span>{userName}</span>
           <button onClick={handleLogout}>Logout</button>
@@ -48,7 +63,7 @@ const Header = ({ userName, isAuth, onLogout }) => {
 
 Header.propTypes = {
   userName: PropTypes.string,
-  isAuth: PropTypes.bool.isRequired,
+  token: PropTypes.string.isRequired,
   onLogout: PropTypes.func.isRequired,
 };
 
@@ -58,7 +73,7 @@ Header.defaultProps = {
 
 const mapStateToProps = (state) => ({
   userName: state.user.name,
-  isAuth: state.user.isAuth,
+  token: state.user.token,
 });
 
 const mapDispatchToProps = {

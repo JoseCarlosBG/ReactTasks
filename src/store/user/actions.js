@@ -1,5 +1,6 @@
-import { LOGIN_USER, LOGOUT_USER } from './types';
-import { loginUser as loginUserService } from '../../services'; // Adjust the path as necessary
+import { FETCH_USER, LOGIN_USER, LOGOUT_USER } from './types';
+import { loginUser as loginUserService } from '../../services';
+import { getUserData as getUserDataService } from '../../services';
 
 // Action creator for login
 export const loginUserAction = (payload) => ({ type: LOGIN_USER, payload });
@@ -38,5 +39,26 @@ export const logoutUser = () => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userRole');
     dispatch(logoutUserAction());
+  };
+};
+
+// Action creator for fetching user data
+export const fetchUserAction = (payload) => ({ type: FETCH_USER, payload });
+
+// Async action for fetching user data
+export const fetchUserData = (token) => {
+  return async (dispatch) => {
+    try {
+      const user = await getUserDataService(token);
+      const userData = {
+        token,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+      dispatch(fetchUserAction(userData));
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
   };
 };
