@@ -23,6 +23,12 @@ const Courses = ({ onAddCourseClick }) => {
   const userRole = useSelector((state) => state.user.role);
 
   useEffect(() => {
+
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    
     dispatch(fetchUserData(token));
     dispatch(fetchCourses(token));
     dispatch(fetchAuthors(token));
