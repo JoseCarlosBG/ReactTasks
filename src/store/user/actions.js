@@ -9,22 +9,26 @@ export const loginUserAction = (payload) => ({ type: LOGIN_USER, payload });
 export const loginUser = (email, password) => {
   return async (dispatch) => {
     try {
-      const { token, user } = await loginUserService(email, password);
+      const { token } = await loginUserService(email, password);
+
+      // Fetch user data including role
+      const user = await getUserDataService(token);
+
       const userData = {
         token,
-        name: user.name,
-        email,
-        role: user.role,
+        name: user.result.name,
+        email: user.result.email,
+        role: user.result.role, 
       };
 
-      // Save token to local storage
+      // Save token and user data to local storage
       localStorage.setItem('userToken', token);
-      localStorage.setItem('userName', user.name);
-      localStorage.setItem('userRole', user.role);
+      localStorage.setItem('userName', user.result.name);
+      localStorage.setItem('userRole', user.result.role);
 
       dispatch(loginUserAction(userData));
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('Error during login:', error.message);
     }
   };
 };

@@ -9,6 +9,7 @@ import CourseInfo from './components/CourseInfo/CourseInfo';
 import './App.css';
 import { STORAGE_KEYS, PATHS } from './constants';
 import { fetchAuthors as fetchAuthorsService } from './services'; 
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -56,6 +57,7 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.USER_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_NAME);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE); // Clear user role from localStorage
     setUserName('');
     navigate(PATHS.LOGIN);
   };
@@ -65,7 +67,11 @@ const App = () => {
       <Header userName={userName} onLogout={handleLogout} />
       <Routes>
         <Route path={PATHS.COURSES} element={<Courses onAddCourseClick={handleAddCourseClick} />} />
-        <Route path={PATHS.ADD_COURSE} element={<CourseForm authors={authors} setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />} />
+        <Route path={PATHS.ADD_COURSE} element={
+          <PrivateRoute>
+            <CourseForm authors={authors} setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />
+          </PrivateRoute>
+        } />
         <Route path={PATHS.REGISTRATION} element={<Registration />} />
         <Route path={PATHS.LOGIN} element={<Login setUserName={setUserName} />} />
         <Route path="/courses/:courseId" element={<CourseInfo authors={authors} />} />

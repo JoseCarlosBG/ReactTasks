@@ -45,13 +45,17 @@ export const loginUser = async (email, password) => {
 };
 
 export const getUserData = async (token) => {
-  const response = await fetch('/users/me', {
+  const response = await fetch(`${ENV + API_ENDPOINTS.MY_USER}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  
   if (!response.ok) {
-    throw new Error('Failed to fetch user data');
+    const errorText = await response.text(); // Read the response body as text
+    throw new Error(`HTTP error! status: ${response.status}, response: ${errorText}`);
   }
-  return response.json();
+
+  const data = await response.json();
+  return data;
 };

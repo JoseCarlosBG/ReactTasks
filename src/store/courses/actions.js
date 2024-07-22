@@ -76,3 +76,27 @@ export const deleteCourse = (id) => {
     }
   };
 };
+
+// Async action to create a new course
+export const addCourse = (courseData, token) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${ENV + API_ENDPOINTS.ROOT_COURSES}/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(courseData),
+      });
+      if (response.ok) {
+        const newCourse = await response.json();
+        dispatch(addCourseAction(newCourse));
+      } else {
+        console.error('Failed to create course:', response.status);
+      }
+    } catch (error) {
+      console.error('Error creating course:', error);
+    }
+  };
+};

@@ -1,23 +1,20 @@
-import { LOGIN_USER, LOGOUT_USER, FETCH_USER } from './types';
+import { LOGIN_USER, LOGOUT_USER } from './types';
 
 const initialState = {
-  isAuth: false, 
-  name: '',
-  email: '',
-  token: '',
-  role: '',
+  token: null,
+  name: null,
+  email: null,
+  role: null, 
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER:
-    case FETCH_USER:
       return {
         ...state,
-        isAuth: true,
+        token: action.payload.token,
         name: action.payload.name,
         email: action.payload.email,
-        token: action.payload.token,
         role: action.payload.role,
       };
     case LOGOUT_USER:
@@ -26,6 +23,5 @@ const userReducer = (state = initialState, action) => {
       return state;
   }
 };
-
 
 export default userReducer;

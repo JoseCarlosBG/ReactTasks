@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Logo from './components/Logo/Logo';
 import { logoutUser } from '../../store/user/actions';
+import { PATHS, API_ENDPOINTS, ENV } from '../../constants';
 import './Header.css';
 
 const Header = ({ userName, token, onLogout }) => {
@@ -11,16 +12,16 @@ const Header = ({ userName, token, onLogout }) => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate(PATHS.LOGIN);
   };
 
   const handleRegistrationClick = () => {
-    navigate('/registration');
+    navigate(PATHS.REGISTRATION);
   };
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/logout', {
+      const response = await fetch(ENV + API_ENDPOINTS.LOGOUT, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -29,7 +30,7 @@ const Header = ({ userName, token, onLogout }) => {
 
       if (response.ok) {
         onLogout();
-        navigate('/login');
+        navigate(PATHS.LOGIN);
       } else {
         console.error('Failed to logout:', response.status);
       }
@@ -51,7 +52,7 @@ const Header = ({ userName, token, onLogout }) => {
           </>
         )}
       </nav>
-      {userName && location.pathname !== '/login' && location.pathname !== '/registration' && (
+      {userName && location.pathname !== PATHS.LOGIN && location.pathname !== PATHS.REGISTRATION && (
         <div className="header-user">
           <span>{userName}</span>
           <button onClick={handleLogout}>Logout</button>

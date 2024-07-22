@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './CourseForm.css';
+import { addCourse } from '../../store/courses/actions'; // Import the addCourse action
+import { addAuthor } from '../../store/authors/actions'; // Import the addAuthor action
 
-const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
+const CourseForm = ({ authors, onCancel }) => {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const durationRef = useRef(null);
@@ -14,32 +17,24 @@ const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
   const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [errors, setErrors] = useState({});
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     setAvailableAuthors(authors);
   }, [authors]);
 
-  const validateTitle = (title) => {
-    const titleRegex = /^[A-Za-z]{4,20}$/;
-    return titleRegex.test(title);
-  };
-
-  const validateDescription = (description) => {
-    return description.length >= 4 && description.length <= 50;
-  };
-
-  const validateDuration = (duration) => {
-    return !isNaN(+duration); // Convert the input value to a number and check if it is really a number
-  };
+  const validateTitle = (title) => /^[A-Za-z]{4,20}$/.test(title);
+  const validateDescription = (description) => description.length >= 4 && description.length <= 50;
+  const validateDuration = (duration) => !isNaN(+duration);
 
   const validateForm = () => {
     const newErrors = {};
     if (!validateTitle(titleRef.current.value)) {
-      newErrors.titleRef = 'The title must contain only between 4-20 alphabetical characters.';
+      newErrors.titleRef = 'The title must contain between 4-20 alphabetical characters.';
     }
     if (!validateDescription(descriptionRef.current.value)) {
-      newErrors.descriptionRef = 'Description must be 4-50 characters';
+      newErrors.descriptionRef = 'Description must be between 4-50 characters.';
     }
     if (!validateDuration(durationRef.current.value)) {
       newErrors.durationRef = 'Duration must be a number.';
@@ -52,23 +47,19 @@ const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
     e.preventDefault();
     if (validateForm()) {
       const newCourse = {
-        id: Date.now().toString(),
         title: titleRef.current.value,
         description: descriptionRef.current.value,
         duration: parseInt(durationRef.current.value, 10),
-        creationDate: creationDateRef.current.value,
         authors: selectedAuthors.map(author => author.id),
       };
-      onCourseForm(newCourse);
+      dispatch(addCourse(newCourse)); // Dispatch the action to add the course
       navigate('/courses');
     }
   };
 
   const handleAddAuthor = (author) => {
     setAvailableAuthors(availableAuthors.filter(a => a.id !== author.id));
-    setSelectedAuthors(
-      [...selectedAuthors, author].sort((a, b) => a.name.localeCompare(b.name))
-    );
+    setSelectedAuthors([...selectedAuthors, author].sort((a, b) => a.name.localeCompare(b.name)));
   };
 
   const handleRemoveAuthor = (author) => {
@@ -81,14 +72,7 @@ const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
   const handleNewAuthor = () => {
     const newAuthorName = newAuthorNameRef.current.value.trim();
     if (newAuthorName) {
-      const newAuthor = {
-        id: Date.now().toString(),
-        name: newAuthorName,
-      };
-      setAuthors([...authors, newAuthor]);
-      setAvailableAuthors([...availableAuthors, newAuthor].sort((a, b) => {
-        return authors.findIndex(au => au.id === a.id) - authors.findIndex(au => au.id === b.id);
-      }));
+      dispatch(addAuthor(newAuthorName)); // Dispatch action to add author
       newAuthorNameRef.current.value = '';
     }
   };
@@ -134,36 +118,29 @@ const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
             )}
           </div>
 
-          <div className="selected-authors">
-            <h4>Course Authors</h4>
+          <div className="authors__selected">
+            <h4>Selected Authors</h4>
             {selectedAuthors.length > 0 ? (
               selectedAuthors.map(author => (
-                <div className="authors__list-item" key={author.id}>
+                <div className="authors__selected-item" key={author.id}>
                   <span>{author.name}</span>
                   <button type="button" onClick={() => handleRemoveAuthor(author)}>Remove</button>
                 </div>
               ))
             ) : (
-              <p>Author list is empty.</p>
+              <p>No authors selected.</p>
             )}
+          </div>
+
+          <div className="authors__new">
+            <input type="text" placeholder="Add new author" ref={newAuthorNameRef} />
+            <button type="button" onClick={handleNewAuthor}>Create Author</button>
           </div>
         </div>
 
-        <div className="authors__new">
-          <input
-            type="text"
-            placeholder="New Author Name"
-            ref={newAuthorNameRef}
-          />
-          <button type="button" onClick={handleNewAuthor}>Create Author</button>
-        </div>
-
-        <div className="create-course__buttons">
-          <button className="button" type="submit">Create Course</button>
-          <button className="button button--secondary" type="button" onClick={() => {
-            onCancel();
-            navigate('/courses');
-          }}>Cancel</button>
+        <div className="form-group">
+          <button type="submit">Submit</button>
+          <button type="button" onClick={onCancel}>Cancel</button>
         </div>
       </form>
     </div>
@@ -171,9 +148,8 @@ const CourseForm = ({ authors, setAuthors, onCourseForm, onCancel }) => {
 };
 
 CourseForm.propTypes = {
-  authors: PropTypes.array.isRequired,
+  authors: PropTypes.arrayOf(PropTypes.object).isRequired,
   setAuthors: PropTypes.func.isRequired,
-  onCourseForm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 
