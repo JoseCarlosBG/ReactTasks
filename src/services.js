@@ -1,4 +1,8 @@
-import { ENV, API_ENDPOINTS } from './constants';
+import { ENV, API_ENDPOINTS, PATHS } from './constants';
+
+const getToken = () => {
+  return localStorage.getItem('userToken');
+};
 
 export const fetchAuthors = async () => {
   try {
@@ -58,4 +62,48 @@ export const getUserData = async (token) => {
 
   const data = await response.json();
   return data;
+};
+
+export const addCourse = async (courseData, token) => {
+  try {
+    const response = await fetch(`${ENV + PATHS.ADD_COURSE}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(courseData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add course: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error adding course:', error);
+    throw error;
+  }
+};
+
+export const deleteCourse = async (courseId) => {
+  const token = getToken();
+  try {
+    const response = await fetch(`${ENV + API_ENDPOINTS.ROOT_COURSES}/${courseId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete course: ${response.status}`);
+    }
+
+    return;
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    throw error;
+  }
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { deleteCourse } from '../../../../store/courses/actions';
 import './CourseCard.css';
@@ -7,8 +8,9 @@ import './CourseCard.css';
 const CourseCard = ({ course, authors, onShowCourseInfo }) => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.user.role);
+  const navigate = useNavigate();
 
-  const getAuthorNames = (authorIds) => {
+  const getAuthorNames = (authorIds = []) => {
     return authorIds.map(id => {
       const author = authors.find(author => author.id === id);
       return author ? author.name : 'Unknown author';
@@ -24,8 +26,7 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
   };
 
   const handleUpdateCourse = () => {
-    //navigate(`/courses/update/${course.id}`);
-    //Implementation for Update course pending
+    navigate(`/courses/${course.id}`);
   };
 
   return (
@@ -39,7 +40,7 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
       </div>
       <div className="course-card__buttons">
         <button className="button" onClick={handleShowCourseInfo}>Show course</button>
-        {userRole === 'ADMIN' && (
+        {userRole === 'admin' && (
           <>
             <button className="button" onClick={handleUpdateCourse}>Update</button>
             <button className="button" onClick={handleDeleteCourse}>Delete</button>

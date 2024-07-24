@@ -1,28 +1,46 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './CourseForm.css';
-import { addCourse } from '../../store/courses/actions'; // Import the addCourse action
-import { addAuthor } from '../../store/authors/actions'; // Import the addAuthor action
+import { addCourse, updateCourse } from '../../store/courses/actions';
+import { addAuthor } from '../../store/authors/actions';
+import { getCourseById } from '../../store/selectors';
 
 const CourseForm = ({ authors, onCancel }) => {
+  const { courseId } = useParams();  // Get courseId from URL parameters
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [availableAuthors, setAvailableAuthors] = useState([]);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [errors, setErrors] = useState({});
+  
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const durationRef = useRef(null);
   const creationDateRef = useRef(null);
   const newAuthorNameRef = useRef(null);
 
-  const [availableAuthors, setAvailableAuthors] = useState([]);
-  const [selectedAuthors, setSelectedAuthors] = useState([]);
-  const [errors, setErrors] = useState({});
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const course = useSelector(state => getCourseById(state, courseId));
 
   useEffect(() => {
-    setAvailableAuthors(authors);
-  }, [authors]);
+    if (course) {
+      setSelectedAuthors(authors.filter(author => course.authors.includes(author.id)));
+      setAvailableAuthors(authors.filter(author => !course.authors.includes(author.id)));
+    } else {
+      setAvailableAuthors(authors);
+    }
+  }, [course, authors]);
+
+  useEffect(() => {
+    if (course) {
+      titleRef.current.value = course.title;
+      descriptionRef.current.value = course.description;
+      durationRef.current.value = course.duration;
+      creationDateRef.current.value = course.creationDate;
+    }
+  }, [course]);
 
   const validateTitle = (title) => /^[A-Za-z]{4,20}$/.test(title);
   const validateDescription = (description) => description.length >= 4 && description.length <= 50;
@@ -46,13 +64,19 @@ const CourseForm = ({ authors, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const newCourse = {
+      const courseData = {
         title: titleRef.current.value,
         description: descriptionRef.current.value,
         duration: parseInt(durationRef.current.value, 10),
+        creationDate: creationDateRef.current.value,
         authors: selectedAuthors.map(author => author.id),
       };
-      dispatch(addCourse(newCourse)); // Dispatch the action to add the course
+      
+      if (courseId) {
+        dispatch(updateCourse(courseId, courseData));
+      } else {
+        dispatch(addCourse(courseData));
+      }
       navigate('/courses');
     }
   };
@@ -72,7 +96,7 @@ const CourseForm = ({ authors, onCancel }) => {
   const handleNewAuthor = () => {
     const newAuthorName = newAuthorNameRef.current.value.trim();
     if (newAuthorName) {
-      dispatch(addAuthor(newAuthorName)); // Dispatch action to add author
+      dispatch(addAuthor(newAuthorName));
       newAuthorNameRef.current.value = '';
     }
   };
@@ -139,7 +163,7 @@ const CourseForm = ({ authors, onCancel }) => {
         </div>
 
         <div className="form-group">
-          <button type="submit">Submit</button>
+          <button type="submit">{courseId ? 'Update Course' : 'Create Course'}</button>
           <button type="button" onClick={onCancel}>Cancel</button>
         </div>
       </form>
@@ -149,7 +173,6 @@ const CourseForm = ({ authors, onCancel }) => {
 
 CourseForm.propTypes = {
   authors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setAuthors: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 

@@ -51,7 +51,7 @@ const Courses = ({ onAddCourseClick }) => {
     <div className="courses">
       <div className="courses__search-bar">
         <SearchBar onSearch={handleSearch} />
-        {userRole === 'ADMIN' && <Button onClick={handleAddCourse}>Add New Course</Button>}
+        {userRole === 'admin' && <Button onClick={handleAddCourse}>Add New Course</Button>}
       </div>
       {courses.length === 0 ? (
         <EmptyCourseList />

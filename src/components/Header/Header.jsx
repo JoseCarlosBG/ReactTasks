@@ -39,22 +39,24 @@ const Header = ({ userName, token, onLogout }) => {
     }
   };
 
+  const displayUserName = userName && userName.trim() !== '' ? userName : 'ADMIN';
+
   return (
     <header className="header">
       <div className="header-logo">
         <Logo />
       </div>
       <nav className="header-nav">
-        {!userName && (
+        {!displayUserName && (
           <>
             <button onClick={handleRegistrationClick}>Register</button>
             <button onClick={handleLoginClick}>Login</button>
           </>
         )}
       </nav>
-      {userName && location.pathname !== PATHS.LOGIN && location.pathname !== PATHS.REGISTRATION && (
+      {displayUserName && location.pathname !== PATHS.LOGIN && location.pathname !== PATHS.REGISTRATION && (
         <div className="header-user">
-          <span>{userName}</span>
+          <span>{displayUserName}</span>
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}

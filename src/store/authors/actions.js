@@ -42,6 +42,7 @@ export const addAuthor = (name) => {
       if (response.ok) {
         const result = await response.json();
         dispatch(addAuthorAction(result.result)); // Dispatch action to add author to Redux store
+        return result.result;
       } else {
         console.error('Failed to add author:', response.status);
       }

@@ -1,3 +1,4 @@
+// components/App/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
@@ -6,10 +7,10 @@ import CourseForm from './components/CourseForm/CourseForm';
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './App.css';
 import { STORAGE_KEYS, PATHS } from './constants';
-import { fetchAuthors as fetchAuthorsService } from './services'; 
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import { fetchAuthors as fetchAuthorsService } from './services';
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -57,7 +58,7 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.USER_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_NAME);
-    localStorage.removeItem(STORAGE_KEYS.USER_ROLE); // Clear user role from localStorage
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
     setUserName('');
     navigate(PATHS.LOGIN);
   };
@@ -69,7 +70,12 @@ const App = () => {
         <Route path={PATHS.COURSES} element={<Courses onAddCourseClick={handleAddCourseClick} />} />
         <Route path={PATHS.ADD_COURSE} element={
           <PrivateRoute>
-            <CourseForm authors={authors} setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />
+            <CourseForm authors={authors} courseId="" setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />
+          </PrivateRoute>
+        } />
+        <Route path="/courses/:courseId" element={
+          <PrivateRoute>
+            <CourseForm isUpdate={true} authors={authors}  onCancel={handleCancelCourseCreation}/>
           </PrivateRoute>
         } />
         <Route path={PATHS.REGISTRATION} element={<Registration />} />

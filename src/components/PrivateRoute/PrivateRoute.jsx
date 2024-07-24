@@ -6,12 +6,15 @@ import { getUserRole } from '../../store/selectors';
 
 const PrivateRoute = ({ children }) => {
   const userRole = useSelector(getUserRole);
-  console.log(userRole);
+  
   if (userRole !== 'admin') {
     return <Navigate to="/courses" />;
   }
-
-  return children;
+  return (
+    <>
+      {children}
+    </>
+  );
 };
 
 PrivateRoute.propTypes = {

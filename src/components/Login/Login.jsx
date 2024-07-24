@@ -18,14 +18,13 @@ const Login = ({ setUserName }) => {
 
     try {
       await dispatch(loginUser(email, password));
-      const userName = localStorage.getItem('userName'); // Fetch userName from localStorage after login
+      let userName = localStorage.getItem('userName'); // Fetch userName from localStorage after login
 
-      if(userName !== null && userName.trim() !== '' && userName.trim() !== 'null' ){
-        setUserName(userName); // Update state with the fetched userName
+      if (!userName || userName.trim() === '' || userName.trim() === 'null') {
+        userName = 'ADMIN';
       }
-      else{
-        setUserName('ADMIN');
-      }
+      
+      setUserName(userName); // Update state with the fetched or default userName
       navigate('/courses');
     } catch (error) {
       console.error('Login failed:', error);
