@@ -5,7 +5,7 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import PropTypes from 'prop-types';
 import './Login.css';
-import { loginUser } from '../../store/user/actions';
+import { loginUser } from '../../store/user/thunk';
 
 const Login = ({ setUserName }) => {
   const [email, setEmail] = useState('');

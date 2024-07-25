@@ -7,9 +7,9 @@ import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import { PATHS } from '../../constants';
 import { getCourses, getAuthors } from '../../store/selectors';
-import { fetchCourses } from '../../store/courses/actions'; 
-import { fetchUserData } from '../../store/user/actions'; 
-import { fetchAuthors } from '../../store/authors/actions'; 
+import { fetchCourses } from '../../store/courses/thunk'; 
+import { fetchUserData } from '../../store/user/thunk'; 
+import { fetchAuthors } from '../../store/authors/thunk'; 
 import './Courses.css';
 import EmptyCourseList from '../EmptyCourseList/EmptyCourseList';
 

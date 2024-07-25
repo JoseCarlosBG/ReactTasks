@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './CourseForm.css';
-import { addCourse, updateCourse } from '../../store/courses/actions';
-import { addAuthor } from '../../store/authors/actions';
+import { addCourse, updateCourse } from '../../store/courses/thunk';
+import { addAuthor } from '../../store/authors/thunk';
 import { getCourseById } from '../../store/selectors';
 
 const CourseForm = ({ authors, onCancel }) => {
@@ -38,7 +38,34 @@ const CourseForm = ({ authors, onCancel }) => {
       titleRef.current.value = course.title;
       descriptionRef.current.value = course.description;
       durationRef.current.value = course.duration;
-      creationDateRef.current.value = course.creationDate;
+      
+      // Try parsing the date as mm/dd/yyyy first
+      const [month, day, year] = course.creationDate.split('/');
+      const mmddyyyyDate = new Date(`${year}-${month}-${day}`);
+
+      if (!isNaN(mmddyyyyDate.getTime())) {
+        // If parsing as mm/dd/yyyy is valid, format it to yyyy-mm-dd
+        creationDateRef.current.value = `${year}-${month}-${day}`;
+      } else {
+        // Otherwise, assume the format is dd/mm/yyyy
+        const [day, month, year] = course.creationDate.split('/');
+        const ddmmyyyyDate = new Date(`${year}-${month}-${day}`);
+        if (!isNaN(ddmmyyyyDate.getTime())) {
+          creationDateRef.current.value = `${year}-${month}-${day}`;
+        }
+        else{
+          //Finally, if both date formats are incorrect, use the yyyy-mm-dd format; otherwise put a blank space
+          
+          const [year, month, day] = course.creationDate.split('/');
+          const yyyymmddDate = new Date(`${year}-${month}-${day}`);
+          if (!isNaN(yyyymmddDate.getTime())){
+            creationDateRef.current.value = `${year}-${month}-${day}`;
+          }
+          else{
+            creationDateRef.current.value = '';
+          }
+        }
+      }
     }
   }, [course]);
 

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Logo from './components/Logo/Logo';
-import { logoutUser } from '../../store/user/actions';
+import { logoutUser } from '../../store/user/thunk';
 import { PATHS, API_ENDPOINTS, ENV } from '../../constants';
 import './Header.css';
 

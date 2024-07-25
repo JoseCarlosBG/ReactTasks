@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourseById, getCourseAuthors } from '../../store/selectors';
-import { fetchCourseById } from '../../store/courses/actions';
+import { fetchCourseById } from '../../store/courses/thunk';
 import './CourseInfo.css';
 
 const CourseInfo = () => {
