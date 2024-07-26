@@ -1,45 +1,85 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import './CreateCourse.css';
+import './CourseForm.css';
+import { addCourse, updateCourse } from '../../store/courses/thunk';
+import { addAuthor } from '../../store/authors/thunk';
+import { getCourseById } from '../../store/selectors';
 
-const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
+const CourseForm = ({ authors, onCancel }) => {
+  const { courseId } = useParams();  // Get courseId from URL parameters
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [availableAuthors, setAvailableAuthors] = useState([]);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [errors, setErrors] = useState({});
+  
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const durationRef = useRef(null);
   const creationDateRef = useRef(null);
   const newAuthorNameRef = useRef(null);
 
-  const [availableAuthors, setAvailableAuthors] = useState([]);
-  const [selectedAuthors, setSelectedAuthors] = useState([]);
-  const [errors, setErrors] = useState({});
-
-  const navigate = useNavigate();
+  const course = useSelector(state => getCourseById(state, courseId));
 
   useEffect(() => {
-    setAvailableAuthors(authors);
-  }, [authors]);
+    if (course) {
+      setSelectedAuthors(authors.filter(author => course.authors.includes(author.id)));
+      setAvailableAuthors(authors.filter(author => !course.authors.includes(author.id)));
+    } else {
+      setAvailableAuthors(authors);
+    }
+  }, [course, authors]);
 
-  const validateTitle = (title) => {
-    const titleRegex = /^[A-Za-z]{4,20}$/;
-    return titleRegex.test(title);
-  };
+  useEffect(() => {
+    if (course) {
+      titleRef.current.value = course.title;
+      descriptionRef.current.value = course.description;
+      durationRef.current.value = course.duration;
+      
+      // Try parsing the date as mm/dd/yyyy first
+      const [month, day, year] = course.creationDate.split('/');
+      const mmddyyyyDate = new Date(`${year}-${month}-${day}`);
 
-  const validateDescription = (description) => {
-    return description.length >= 4 && description.length <= 50;
-  };
+      if (!isNaN(mmddyyyyDate.getTime())) {
+        // If parsing as mm/dd/yyyy is valid, format it to yyyy-mm-dd
+        creationDateRef.current.value = `${year}-${month}-${day}`;
+      } else {
+        // Otherwise, assume the format is dd/mm/yyyy
+        const [day, month, year] = course.creationDate.split('/');
+        const ddmmyyyyDate = new Date(`${year}-${month}-${day}`);
+        if (!isNaN(ddmmyyyyDate.getTime())) {
+          creationDateRef.current.value = `${year}-${month}-${day}`;
+        }
+        else{
+          //Finally, if both date formats are incorrect, use the yyyy-mm-dd format; otherwise put a blank space
+          
+          const [year, month, day] = course.creationDate.split('/');
+          const yyyymmddDate = new Date(`${year}-${month}-${day}`);
+          if (!isNaN(yyyymmddDate.getTime())){
+            creationDateRef.current.value = `${year}-${month}-${day}`;
+          }
+          else{
+            creationDateRef.current.value = '';
+          }
+        }
+      }
+    }
+  }, [course]);
 
-  const validateDuration = (duration) => {
-    return !isNaN(+duration); // Convert the input value to a number and check if it is really a number
-  };
+  const validateTitle = (title) => /^[A-Za-z]{4,20}$/.test(title);
+  const validateDescription = (description) => description.length >= 4 && description.length <= 50;
+  const validateDuration = (duration) => !isNaN(+duration);
 
   const validateForm = () => {
     const newErrors = {};
     if (!validateTitle(titleRef.current.value)) {
-      newErrors.titleRef = 'The title must contain only between 4-20 alphabetical characters.';
+      newErrors.titleRef = 'The title must contain between 4-20 alphabetical characters.';
     }
     if (!validateDescription(descriptionRef.current.value)) {
-      newErrors.descriptionRef = 'Description must be 4-50 characters';
+      newErrors.descriptionRef = 'Description must be between 4-50 characters.';
     }
     if (!validateDuration(durationRef.current.value)) {
       newErrors.durationRef = 'Duration must be a number.';
@@ -51,24 +91,26 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const newCourse = {
-        id: Date.now().toString(),
+      const courseData = {
         title: titleRef.current.value,
         description: descriptionRef.current.value,
         duration: parseInt(durationRef.current.value, 10),
         creationDate: creationDateRef.current.value,
         authors: selectedAuthors.map(author => author.id),
       };
-      onCreateCourse(newCourse);
+      
+      if (courseId) {
+        dispatch(updateCourse(courseId, courseData));
+      } else {
+        dispatch(addCourse(courseData));
+      }
       navigate('/courses');
     }
   };
 
   const handleAddAuthor = (author) => {
     setAvailableAuthors(availableAuthors.filter(a => a.id !== author.id));
-    setSelectedAuthors(
-      [...selectedAuthors, author].sort((a, b) => a.name.localeCompare(b.name))
-    );
+    setSelectedAuthors([...selectedAuthors, author].sort((a, b) => a.name.localeCompare(b.name)));
   };
 
   const handleRemoveAuthor = (author) => {
@@ -81,14 +123,7 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
   const handleNewAuthor = () => {
     const newAuthorName = newAuthorNameRef.current.value.trim();
     if (newAuthorName) {
-      const newAuthor = {
-        id: Date.now().toString(),
-        name: newAuthorName,
-      };
-      setAuthors([...authors, newAuthor]);
-      setAvailableAuthors([...availableAuthors, newAuthor].sort((a, b) => {
-        return authors.findIndex(au => au.id === a.id) - authors.findIndex(au => au.id === b.id);
-      }));
+      dispatch(addAuthor(newAuthorName));
       newAuthorNameRef.current.value = '';
     }
   };
@@ -134,47 +169,38 @@ const CreateCourse = ({ authors, setAuthors, onCreateCourse, onCancel }) => {
             )}
           </div>
 
-          <div className="selected-authors">
-            <h4>Course Authors</h4>
+          <div className="authors__selected">
+            <h4>Selected Authors</h4>
             {selectedAuthors.length > 0 ? (
               selectedAuthors.map(author => (
-                <div className="authors__list-item" key={author.id}>
+                <div className="authors__selected-item" key={author.id}>
                   <span>{author.name}</span>
                   <button type="button" onClick={() => handleRemoveAuthor(author)}>Remove</button>
                 </div>
               ))
             ) : (
-              <p>Author list is empty.</p>
+              <p>No authors selected.</p>
             )}
+          </div>
+
+          <div className="authors__new">
+            <input type="text" placeholder="Add new author" ref={newAuthorNameRef} />
+            <button type="button" onClick={handleNewAuthor}>Create Author</button>
           </div>
         </div>
 
-        <div className="authors__new">
-          <input
-            type="text"
-            placeholder="New Author Name"
-            ref={newAuthorNameRef}
-          />
-          <button type="button" onClick={handleNewAuthor}>Create Author</button>
-        </div>
-
-        <div className="create-course__buttons">
-          <button className="button" type="submit">Create Course</button>
-          <button className="button button--secondary" type="button" onClick={() => {
-            onCancel();
-            navigate('/courses');
-          }}>Cancel</button>
+        <div className="form-group">
+          <button type="submit">{courseId ? 'Update Course' : 'Create Course'}</button>
+          <button type="button" onClick={onCancel}>Cancel</button>
         </div>
       </form>
     </div>
   );
 };
 
-CreateCourse.propTypes = {
-  authors: PropTypes.array.isRequired,
-  setAuthors: PropTypes.func.isRequired,
-  onCreateCourse: PropTypes.func.isRequired,
+CourseForm.propTypes = {
+  authors: PropTypes.arrayOf(PropTypes.object).isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 
-export default CreateCourse;
+export default CourseForm;

@@ -1,9 +1,10 @@
 import { LOGIN_USER, LOGOUT_USER } from './types';
 
 const initialState = {
-  name: '',
-  email: '',
-  token: '',
+  token: null,
+  name: null,
+  email: null,
+  role: null, 
 };
 
 const userReducer = (state = initialState, action) => {
@@ -11,9 +12,10 @@ const userReducer = (state = initialState, action) => {
     case LOGIN_USER:
       return {
         ...state,
+        token: action.payload.token,
         name: action.payload.name,
         email: action.payload.email,
-        token: action.payload.token,
+        role: action.payload.role,
       };
     case LOGOUT_USER:
       return initialState;

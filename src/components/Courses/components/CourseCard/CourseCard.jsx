@@ -1,13 +1,16 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { deleteCourse } from '../../../../store/courses/actions'; // Import the delete action
+import { deleteCourse } from '../../../../store/courses/thunk';
 import './CourseCard.css';
 
-const CourseCard = ({ course, authors, onShowCourseInfo }) => {
+const CourseCard = ({ course, authors }) => {
   const dispatch = useDispatch();
+  const userRole = useSelector((state) => state.user.role);
+  const navigate = useNavigate();
 
-  const getAuthorNames = (authorIds) => {
+  const getAuthorNames = (authorIds = []) => {
     return authorIds.map(id => {
       const author = authors.find(author => author.id === id);
       return author ? author.name : 'Unknown author';
@@ -15,7 +18,7 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
   };
 
   const handleShowCourseInfo = () => {
-    onShowCourseInfo(course);
+    navigate(`/courses/${course.id}/info`);
   };
 
   const handleDeleteCourse = () => {
@@ -23,8 +26,7 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
   };
 
   const handleUpdateCourse = () => {
-    // Update functionality will be implemented later
-    console.log('Update course clicked for course ID:', course.id);
+    navigate(`/courses/${course.id}/edit`);
   };
 
   return (
@@ -38,8 +40,12 @@ const CourseCard = ({ course, authors, onShowCourseInfo }) => {
       </div>
       <div className="course-card__buttons">
         <button className="button" onClick={handleShowCourseInfo}>Show course</button>
-        <button className="button" onClick={handleUpdateCourse}>Update</button>
-        <button className="button" onClick={handleDeleteCourse}>Delete</button>
+        {userRole === 'admin' && (
+          <>
+            <button className="button" onClick={handleUpdateCourse}>Update</button>
+            <button className="button" onClick={handleDeleteCourse}>Delete</button>
+          </>
+        )}
       </div>
     </div>
   );

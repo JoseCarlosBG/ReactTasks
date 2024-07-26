@@ -4,7 +4,9 @@ export const API_ENDPOINTS = {
   AUTHORS: '/authors/all',
   REGISTER: '/register',
   LOGIN: '/login',
+  LOGOUT: '/logout',
   ROOT_COURSES: '/courses',
+  MY_USER: '/users/me'
 };
 
 export const PLACEHOLDER_TEXTS = {
@@ -20,6 +22,7 @@ export const STORAGE_KEYS = {
 
 export const PATHS = {
   LOGIN: '/login',
+  LOGOUT: '/logout',
   REGISTRATION: '/registration',
   COURSES: '/courses',
   ADD_COURSE: '/courses/add',

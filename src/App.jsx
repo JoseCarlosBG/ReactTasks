@@ -1,14 +1,16 @@
+// components/App/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './App.css';
 import { STORAGE_KEYS, PATHS } from './constants';
-import { fetchAuthors as fetchAuthorsService } from './services'; 
+import { fetchAuthors as fetchAuthorsService } from './services';
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -44,7 +46,7 @@ const App = () => {
     navigate(PATHS.ADD_COURSE);
   };
 
-  const handleCreateCourse = (newCourse) => {
+  const handleCourseForm = (newCourse) => {
     setCourses([...courses, newCourse]);
     navigate(PATHS.COURSES);
   };
@@ -56,6 +58,7 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.USER_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_NAME);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
     setUserName('');
     navigate(PATHS.LOGIN);
   };
@@ -65,10 +68,19 @@ const App = () => {
       <Header userName={userName} onLogout={handleLogout} />
       <Routes>
         <Route path={PATHS.COURSES} element={<Courses onAddCourseClick={handleAddCourseClick} />} />
-        <Route path={PATHS.ADD_COURSE} element={<CreateCourse authors={authors} setAuthors={setAuthors} onCreateCourse={handleCreateCourse} onCancel={handleCancelCourseCreation} />} />
+        <Route path={PATHS.ADD_COURSE} element={
+          <PrivateRoute>
+            <CourseForm authors={authors} courseId="" setAuthors={setAuthors} onCourseForm={handleCourseForm} onCancel={handleCancelCourseCreation} />
+          </PrivateRoute>
+        } />
+        <Route path="/courses/:courseId/edit" element={
+          <PrivateRoute>
+            <CourseForm isUpdate={true} authors={authors}  onCancel={handleCancelCourseCreation}/>
+          </PrivateRoute>
+        } />
         <Route path={PATHS.REGISTRATION} element={<Registration />} />
         <Route path={PATHS.LOGIN} element={<Login setUserName={setUserName} />} />
-        <Route path="/courses/:courseId" element={<CourseInfo authors={authors} />} />
+        <Route path="/courses/:courseId/info" element={<CourseInfo authors={authors} />} />
         <Route path="/" element={<Navigate to={PATHS.COURSES} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

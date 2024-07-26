@@ -7,9 +7,11 @@ import CourseCard from './components/CourseCard/CourseCard';
 import Button from '../../common/Button/Button';
 import { PATHS } from '../../constants';
 import { getCourses, getAuthors } from '../../store/selectors';
-import { fetchCourses } from '../../store/courses/actions'; 
-import { fetchAuthors } from '../../store/authors/actions'; 
+import { fetchCourses } from '../../store/courses/thunk'; 
+import { fetchUserData } from '../../store/user/thunk'; 
+import { fetchAuthors } from '../../store/authors/thunk'; 
 import './Courses.css';
+import EmptyCourseList from '../EmptyCourseList/EmptyCourseList';
 
 const Courses = ({ onAddCourseClick }) => {
   const navigate = useNavigate();
@@ -17,15 +19,20 @@ const Courses = ({ onAddCourseClick }) => {
 
   const courses = useSelector(getCourses);
   const authors = useSelector(getAuthors);
-  const token = useSelector((state) => state.user.token);;
+  const token = useSelector((state) => state.user.token);
+  const userRole = useSelector((state) => state.user.role);
 
   useEffect(() => {
-    if (token) {
-      navigate(PATHS.COURSES);
+
+    if (!token) {
+      navigate('/login');
+      return;
     }
+    
+    dispatch(fetchUserData(token));
     dispatch(fetchCourses(token));
     dispatch(fetchAuthors(token));
-  }, [dispatch, navigate]);
+  }, [dispatch, token]);
 
   const handleSearch = (term) => {
     dispatch(fetchCourses(token, term, 'title'));
@@ -40,25 +47,26 @@ const Courses = ({ onAddCourseClick }) => {
     navigate(`/courses/${course.id}`);
   };
 
-  useEffect(() => {
-  }, [courses]);
-
   return (
     <div className="courses">
       <div className="courses__search-bar">
         <SearchBar onSearch={handleSearch} />
-        <Button onClick={handleAddCourse}>Add New Course</Button>
+        {userRole === 'admin' && <Button onClick={handleAddCourse}>Add New Course</Button>}
       </div>
-      <div className="courses__list">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            course={course}
-            authors={authors}
-            onShowCourseInfo={handleShowCourseInfo}
-          />
-        ))}
-      </div>
+      {courses.length === 0 ? (
+        <EmptyCourseList />
+      ) : (
+        <div className="courses__list">
+          {courses.map((course) => (
+            <CourseCard
+              key={course.id}
+              course={course}
+              authors={authors}
+              onShowCourseInfo={handleShowCourseInfo}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
