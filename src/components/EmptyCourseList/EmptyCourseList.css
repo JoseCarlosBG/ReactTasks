@@ -1,19 +1,18 @@
 .empty-course-list {
-    text-align: center;
-    padding: 50px;
-  }
-  
-  .empty-course-list h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .empty-course-list p {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .empty-course-list button {
-    padding: 10px 20px;
-  }
-  
+  text-align: center;
+  padding: 50px;
+}
+
+.empty-course-list h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.empty-course-list p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.empty-course-list button {
+  padding: 10px 20px;
+}

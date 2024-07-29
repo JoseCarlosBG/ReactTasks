@@ -1,13 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import logo from './Logo.png';
+import React from "react";
+import PropTypes from "prop-types";
+import logo from "./Logo.png";
 
 const Logo = ({ src, alt, style }) => {
   return (
     <img
       src={src || logo}
-      alt={alt || 'Logo'}
-      style={style || { width: '100px', height: 'auto' }}
+      alt={alt || "Logo"}
+      style={style || { width: "100px", height: "auto" }}
+      data-testid="logo" // Added data-testid attribute
     />
   );
 };
@@ -20,8 +21,8 @@ Logo.propTypes = {
 
 Logo.defaultProps = {
   src: logo,
-  alt: 'Logo',
-  style: { width: '100px', height: 'auto' },
+  alt: "Logo",
+  style: { width: "100px", height: "auto" },
 };
 
 export default Logo;

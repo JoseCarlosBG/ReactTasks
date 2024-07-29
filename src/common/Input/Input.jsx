@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './Input.css'; // Using CSS Modules for scoped styles
+import React from "react";
+import PropTypes from "prop-types";
+import styles from "./Input.css"; // Using CSS Modules for scoped styles
 
 const Input = ({ labelText, ...props }) => {
   return (

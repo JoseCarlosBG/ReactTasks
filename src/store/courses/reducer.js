@@ -1,4 +1,9 @@
-import { SAVE_COURSES, ADD_COURSE, DELETE_COURSE, UPDATE_COURSE } from './types';
+import {
+  SAVE_COURSES,
+  ADD_COURSE,
+  DELETE_COURSE,
+  UPDATE_COURSE,
+} from "./types";
 
 const initialState = [];
 
@@ -9,9 +14,11 @@ const coursesReducer = (state = initialState, action) => {
     case ADD_COURSE:
       return [...state, action.payload];
     case DELETE_COURSE:
-      return state.filter(course => course.id !== action.payload);
+      return state.filter((course) => course.id !== action.payload);
     case UPDATE_COURSE:
-      return state.map(course => course.id === action.payload.id ? action.payload : course);
+      return state.map((course) =>
+        course.id === action.payload.id ? action.payload : course,
+      );
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import { FETCH_USER, LOGIN_USER, LOGOUT_USER } from './types';
+import { FETCH_USER, LOGIN_USER, LOGOUT_USER } from "./types";
 
 // Action creator for login
 export const loginUserAction = (payload) => ({ type: LOGIN_USER, payload });

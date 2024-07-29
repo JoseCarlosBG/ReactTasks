@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import Input from '../../../../common/Input/Input';
-import Button from '../../../../common/Button/Button';
-import styles from './SearchBar.css'; 
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import Input from "../../../../common/Input/Input";
+import Button from "../../../../common/Button/Button";
+import styles from "./SearchBar.css";
 
 const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
@@ -16,18 +16,18 @@ const SearchBar = ({ onSearch }) => {
   };
 
   const handleClearSearch = () => {
-    setSearchTerm('');
-    onSearch('');
+    setSearchTerm("");
+    onSearch("");
   };
 
   return (
     <div className={styles.searchBar}>
-      <Input 
-        labelText="Search Courses:" 
-        placeholder="Enter course title or ID" 
-        value={searchTerm} 
-        onChange={handleInputChange} 
-        aria-label="Search input" 
+      <Input
+        labelText="Search Courses:"
+        placeholder="Enter course title or ID"
+        value={searchTerm}
+        onChange={handleInputChange}
+        aria-label="Search input"
       />
       <Button onClick={handleSearchClick}>Search</Button>
       <Button onClick={handleClearSearch}>Clear</Button>

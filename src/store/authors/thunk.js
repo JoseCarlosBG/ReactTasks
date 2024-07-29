@@ -1,5 +1,5 @@
-import { API_ENDPOINTS, ENV, STORAGE_KEYS } from '../../constants';
-import { saveAuthorsAction, addAuthorAction } from './actions';
+import { API_ENDPOINTS, ENV, STORAGE_KEYS } from "../../constants";
+import { saveAuthorsAction, addAuthorAction } from "./actions";
 
 // Async action to fetch authors
 export const fetchAuthors = (token) => {
@@ -14,10 +14,10 @@ export const fetchAuthors = (token) => {
         const data = await response.json();
         dispatch(saveAuthorsAction(data.result));
       } else {
-        console.error('Failed to fetch authors:', response.status);
+        console.error("Failed to fetch authors:", response.status);
       }
     } catch (error) {
-      console.error('Error fetching authors:', error);
+      console.error("Error fetching authors:", error);
     }
   };
 };
@@ -28,9 +28,9 @@ export const addAuthor = (name) => {
     const token = localStorage.getItem(STORAGE_KEYS.USER_TOKEN);
     try {
       const response = await fetch(`${ENV + API_ENDPOINTS.AUTHORS}/add`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ name }),
@@ -40,10 +40,10 @@ export const addAuthor = (name) => {
         dispatch(addAuthorAction(result.result)); // Dispatch action to add author to Redux store
         return result.result;
       } else {
-        console.error('Failed to add author:', response.status);
+        console.error("Failed to add author:", response.status);
       }
     } catch (error) {
-      console.error('Error adding author:', error);
+      console.error("Error adding author:", error);
     }
   };
 };

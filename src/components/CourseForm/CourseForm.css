@@ -34,7 +34,8 @@
   gap: 20px;
 }
 
-.authors__list, .selected-authors {
+.authors__list,
+.selected-authors {
   width: 45%;
 }
 

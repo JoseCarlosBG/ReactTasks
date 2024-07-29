@@ -1,20 +1,16 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { getUserRole } from '../../store/selectors';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { getUserRole } from "../../store/selectors";
 
 const PrivateRoute = ({ children }) => {
   const userRole = useSelector(getUserRole);
-  
-  if (userRole !== 'admin') {
+
+  if (userRole !== "admin") {
     return <Navigate to="/courses" />;
   }
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 PrivateRoute.propTypes = {

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import Input from '../../common/Input/Input';
-import Button from '../../common/Button/Button';
-import PropTypes from 'prop-types';
-import './Login.css';
-import { loginUser } from '../../store/user/thunk';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import Input from "../../common/Input/Input";
+import Button from "../../common/Button/Button";
+import PropTypes from "prop-types";
+import "./Login.css";
+import { loginUser } from "../../store/user/thunk";
 
 const Login = ({ setUserName }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,16 +18,16 @@ const Login = ({ setUserName }) => {
 
     try {
       await dispatch(loginUser(email, password));
-      let userName = localStorage.getItem('userName'); // Fetch userName from localStorage after login
+      let userName = localStorage.getItem("userName"); // Fetch userName from localStorage after login
 
-      if (!userName || userName.trim() === '' || userName.trim() === 'null') {
-        userName = 'ADMIN';
+      if (!userName || userName.trim() === "" || userName.trim() === "null") {
+        userName = "ADMIN";
       }
-      
+
       setUserName(userName); // Update state with the fetched or default userName
-      navigate('/courses');
+      navigate("/courses");
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -54,7 +54,8 @@ const Login = ({ setUserName }) => {
         <Button type="submit">Login</Button>
       </form>
       <p>
-        If you do not have an account, you can <Link to="/registration">Register</Link>
+        If you do not have an account, you can{" "}
+        <Link to="/registration">Register</Link>
       </p>
     </div>
   );

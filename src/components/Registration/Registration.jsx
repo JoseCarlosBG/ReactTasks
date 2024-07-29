@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Input from '../../common/Input/Input';
-import Button from '../../common/Button/Button';
-import { API_ENDPOINTS, PLACEHOLDER_TEXTS } from '../../constants';
-import './Registration.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Input from "../../common/Input/Input";
+import Button from "../../common/Button/Button";
+import { API_ENDPOINTS, PLACEHOLDER_TEXTS } from "../../constants";
+import "./Registration.css";
 
 const Registration = () => {
-  const env = 'http://localhost:4000';
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const env = "http://localhost:4000";
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -30,13 +30,14 @@ const Registration = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!validateName(name)) {
-      newErrors.name = 'Name must be 4-20 alphabetical characters.';
+      newErrors.name = "Name must be 4-20 alphabetical characters.";
     }
     if (!validateEmail(email)) {
-      newErrors.email = 'Email must be 3-50 characters and a valid email address.';
+      newErrors.email =
+        "Email must be 3-50 characters and a valid email address.";
     }
     if (!validatePassword(password)) {
-      newErrors.password = 'Password must be 6-20 characters.';
+      newErrors.password = "Password must be 6-20 characters.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -46,18 +47,18 @@ const Registration = () => {
     event.preventDefault();
     if (validateForm()) {
       const response = await fetch(env + API_ENDPOINTS.REGISTER, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, email, password }),
       });
 
       if (response.ok) {
-        navigate('/login');
+        navigate("/login");
       } else {
         // Handle error
-        alert('Registration failed');
+        alert("Registration failed");
       }
     }
   };

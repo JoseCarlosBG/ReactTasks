@@ -1,10 +1,10 @@
-import { LOGIN_USER, LOGOUT_USER } from './types';
+import { LOGIN_USER, LOGOUT_USER } from "./types";
 
 const initialState = {
   token: null,
   name: null,
   email: null,
-  role: null, 
+  role: null,
 };
 
 const userReducer = (state = initialState, action) => {

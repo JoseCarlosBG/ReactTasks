@@ -1,11 +1,11 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Logo from './components/Logo/Logo';
-import { logoutUser } from '../../store/user/thunk';
-import { PATHS, API_ENDPOINTS, ENV } from '../../constants';
-import './Header.css';
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Logo from "./components/Logo/Logo";
+import { logoutUser } from "../../store/user/thunk";
+import { PATHS, API_ENDPOINTS, ENV } from "../../constants";
+import "./Header.css";
 
 const Header = ({ userName, token, onLogout }) => {
   const location = useLocation();
@@ -22,7 +22,7 @@ const Header = ({ userName, token, onLogout }) => {
   const handleLogout = async () => {
     try {
       const response = await fetch(ENV + API_ENDPOINTS.LOGOUT, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,14 +32,15 @@ const Header = ({ userName, token, onLogout }) => {
         onLogout();
         navigate(PATHS.LOGIN);
       } else {
-        console.error('Failed to logout:', response.status);
+        console.error("Failed to logout:", response.status);
       }
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     }
   };
 
-  const displayUserName = userName && userName.trim() !== '' ? userName : 'ADMIN';
+  const displayUserName =
+    userName && userName.trim() !== "" ? userName : "ADMIN";
 
   return (
     <header className="header">
@@ -54,12 +55,14 @@ const Header = ({ userName, token, onLogout }) => {
           </>
         )}
       </nav>
-      {displayUserName && location.pathname !== PATHS.LOGIN && location.pathname !== PATHS.REGISTRATION && (
-        <div className="header-user">
-          <span>{displayUserName}</span>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      )}
+      {displayUserName &&
+        location.pathname !== PATHS.LOGIN &&
+        location.pathname !== PATHS.REGISTRATION && (
+          <div className="header-user">
+            <span>{displayUserName}</span>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        )}
     </header>
   );
 };
@@ -71,7 +74,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  userName: '',
+  userName: "",
 };
 
 const mapStateToProps = (state) => ({

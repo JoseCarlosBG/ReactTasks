@@ -1,4 +1,4 @@
-import { SAVE_AUTHORS, ADD_AUTHOR, DELETE_AUTHOR } from './types';
+import { SAVE_AUTHORS, ADD_AUTHOR, DELETE_AUTHOR } from "./types";
 
 const initialState = [];
 
@@ -9,7 +9,7 @@ const authorsReducer = (state = initialState, action) => {
     case ADD_AUTHOR:
       return [...state, action.payload];
     case DELETE_AUTHOR:
-      return state.filter(author => author.id !== action.payload);
+      return state.filter((author) => author.id !== action.payload);
     default:
       return state;
   }
